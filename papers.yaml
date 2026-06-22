@@ -1,0 +1,46 @@
+# Paper list data. Edit here, then run: python generate_paper_list.py
+# Fields: title (req), url (req), date "YYYY.MM" (req), category (req),
+#         code (opt), tldr (opt). Category must match one in CATEGORY_ORDER
+#         inside generate_paper_list.py.
+#
+# NOTE: entries below are seeds drawn from prior survey work — verify
+# links, dates, and venues before publishing.
+
+- title: "A Survey on LLM-as-a-Judge"
+  url: "https://arxiv.org/abs/2411.15594"
+  date: "2024.11"
+  category: "Surveys"
+  tldr: "Maps the LLM-as-a-Judge landscape, including a consistency/reliability cluster covering biases and stability."
+
+- title: "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena"
+  url: "https://arxiv.org/abs/2306.05685"
+  date: "2023.06"
+  category: "Position / Order Bias"
+  code: "https://github.com/lm-sys/FastChat"
+  tldr: "Introduces MT-Bench and documents position, verbosity, and self-enhancement biases in LLM judges."
+
+- title: "Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators"
+  url: "https://arxiv.org/abs/2404.04475"
+  date: "2024.04"
+  category: "Length / Verbosity Bias"
+  code: "https://github.com/tatsu-lab/alpaca_eval"
+  tldr: "Regresses out answer length to produce a length-controlled win rate, reducing verbosity bias."
+
+- title: "Investigating Non-Transitivity in LLM-as-a-Judge"
+  url: "https://arxiv.org/abs/2502.14074"
+  date: "2025.02"
+  category: "Non-Transitivity"
+  tldr: "Shows pairwise LLM judgments violate transitivity; analyzes Bradley-Terry limits and round-robin tournament aggregation."
+
+- title: "RewardBench: Evaluating Reward Models for Language Modeling"
+  url: "https://arxiv.org/abs/2403.13787"
+  date: "2024.03"
+  category: "Calibration & Reliability"
+  code: "https://github.com/allenai/reward-bench"
+  tldr: "Benchmark probing reward-model / judge reliability across chat, reasoning, and safety prompts."
+
+- title: "RankRefine: Post-hoc Bradley-Terry Refinement for LLM Judge Rankings"
+  url: "https://arxiv.org/abs/2508.16495"
+  date: "2025.08"
+  category: "Mitigation & Repair"
+  tldr: "Refines noisy judge rankings via post-hoc Bradley-Terry regression."
