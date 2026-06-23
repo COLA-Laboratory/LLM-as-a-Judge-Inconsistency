@@ -86,7 +86,7 @@ Methods commonly used as comparison points. Split into *judging paradigms* (how 
 
 ## Paper List
 
-> Maintained from [`papers.yaml`](papers.yaml) via [`generate_paper_list.py`](generate_paper_list.py). Edit the YAML, then run the script to regenerate the section below.
+> A curated collection of papers on inconsistency in LLM-as-a-Judge, grouped by the **source** of inconsistency rather than by model or task. Each entry gives the paper link, publication date, code (where available), and a one-sentence takeaway. Within each category, papers are ordered chronologically so the progression of ideas is easy to follow.
 
 <!-- PAPER-LIST:START -->
 
