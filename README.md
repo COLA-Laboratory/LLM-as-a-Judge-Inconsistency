@@ -1,151 +1,60 @@
-# ⚖️ Awesome LLM-as-a-Judge Inconsistency [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+# LLM-as-a-Judge for Biological Scientific Discovery
 
-[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/COLA-Laboratory/LLM-as-a-Judge-Inconsistency)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
-[![Last Update](https://img.shields.io/badge/Last_Update-2026.06-blue.svg)](https://github.com/COLA-Laboratory/LLM-as-a-Judge-Inconsistency)
+*Tasks, Methods, and Validation*
 
-A curated, up-to-date collection of work on **inconsistency in LLM-as-a-Judge**: when LLM evaluators give unstable, biased, or non-rankable preferences. We organize the literature by the *source* of inconsistency, and separately track the **baselines** (judging / aggregation methods) and **datasets** commonly used to study it.
+How do language models judge a hypothesis, a mechanism, an experiment, a candidate or a research result? This reading collection for a survey follows each judgment from the evidence available to the model through its verdict to any measured change in research decisions. Its scope covers basic biology, biological engineering and drug discovery. Clinical diagnosis and patient advice are adjacent areas.
 
-> **Scope**: We focus on papers that *measure, explain, or repair* inconsistency in LLM judges — including order/self-preference/length biases, non-transitivity (cyclic preferences), run-to-run instability, calibration, and the aggregation models (Bradley–Terry, Elo, and extensions) used to turn noisy judgments into rankings. General LLM-as-a-Judge methods are included only when inconsistency is a central concern.
+[Reading guide](#reading-guide) · [Literature by role](#literature-by-role) · [Evidence notes](docs/evidence.md) · [Screening and migration](docs/screening.md) · [Contributing](#contributing)
 
----
+## Reading guide
 
-## Table of Contents
+- Start with [SKiM-GPT](docs/evidence.md#skim-gpt) to see four experts and a model assess the same abstracts. Compare what the authors measured about agreement and review time.
+- Read [KnowHD](docs/evidence.md#knowhd) alongside [FActScore](docs/evidence.md#factscore) to see how claim-level evidence becomes a score. A newly proposed relationship can lack prior support even when its premises are sound.
+- Compare the [ChatInvent judge](docs/evidence.md#chatinvent-judge) with the [biomedical hypothesis generator study](docs/evidence.md#qi-biomedical). The former validates an evaluator. The latter uses a scoring rubric to compare generators.
 
-* [Taxonomy](#taxonomy) — How we classify inconsistency
-* [Baselines](#baselines) — Judging paradigms & aggregation methods
-* [Datasets & Benchmarks](#datasets--benchmarks)
-* [Paper List](#paper-list) — Organized by source of inconsistency
-* [Contributing](#contributing)
-* [Abbreviations](#abbreviations)
+## Inclusion criteria
 
----
+For a direct judge record, identify the evaluated object, the criteria or evidence available to the LLM, its verdict format, and a full-text method, appendix or public prompt that establishes the first three. Primary research here means work that introduces, implements or tests a method. Generation alone, human-only review, property prediction and programmatic metrics do not qualify a paper as using an LLM judge.
 
-## Taxonomy
+Each work has one role. Task and method tags describe the judgment independently. A and B form the biological primary reading set. D covers workflows and adjacent applications with an identifiable judge. Surveys are counted separately. The evidence notes distinguish repeated judgments, expert agreement, literature support, experimental confirmation and downstream benefit.
 
-We classify inconsistency by **where it comes from**, not by which model exhibits it. The first two clusters (non-transitivity, run-to-run stability) are under-covered by existing lists and are the focus of this collection.
-
-<!-- Add a taxonomy figure here once ready: -->
-<!-- ![Taxonomy](assets/taxonomy.png) -->
-
-| Cluster | What it captures |
-|---|---|
-| **Position / Order bias** | Verdict depends on candidate ordering; swap-based correction |
-| **Self-preference bias** | Judge favors its own (or same-family) outputs |
-| **Length / Verbosity bias** | Longer answers scored higher; length-controlled correction |
-| **Non-transitivity** | A≻B, B≻C, yet C≻A — cyclic triads, transitivity violation |
-| **Stability / Self-consistency** | Variance across runs, temperature, prompt perturbations |
-| **Calibration & Reliability** | Confidence calibration, conformal / uncertainty guarantees |
-| **Aggregation models** | Bradley–Terry, Elo, mElo, multidimensional capability models |
-| **Mitigation & Repair** | Debiasing, conflict isolation, post-hoc preference repair |
-
----
-
-## Baselines
-
-Methods commonly used as comparison points. Split into *judging paradigms* (how a single verdict is produced) and *aggregation* (how many verdicts become a ranking).
-
-### Judging paradigms
-
-| Method | Idea | Typical inconsistency studied |
-|---|---|---|
-| Pairwise comparison | Judge picks the better of two answers | Position bias, non-transitivity |
-| Pointwise grading | Judge scores a single answer (e.g. 1–10) | Calibration, scale drift |
-| Reference-guided | Judge compares against a gold answer | Self-preference, bias |
-| Round-robin tournament | All-pairs pairwise, then aggregate | Cyclic triads |
-
-### Aggregation models
-
-| Method | Note |
-|---|---|
-| Bradley–Terry (BT) | Scalar-strength assumption; baseline ranking model |
-| Elo | Online update; order-sensitive |
-| mElo / multidimensional Elo | Captures non-transitive (cyclic) structure |
-| Bayesian Hodge-BT | Hodge decomposition + Bayesian BT |
-| GPM | General preference / capability modeling |
-| RankRefine | Post-hoc BT regression refinement |
-
----
-
-## Datasets & Benchmarks
-
-| Dataset | Emphasis | Link |
-|---|---|---|
-| MT-Bench | Multi-turn, pairwise judging | [paper](https://arxiv.org/abs/2306.05685) |
-| Chatbot Arena | Large-scale human preferences | [paper](https://arxiv.org/abs/2403.04132) |
-| Arena-Hard | Hard, discriminative pairwise prompts | [repo](https://github.com/lmarena/arena-hard-auto) |
-| AlpacaEval 2.0 (LC) | Length-controlled win rate | [paper](https://arxiv.org/abs/2404.04475) |
-| WildBench | Real-world task distribution | [paper](https://arxiv.org/abs/2406.04770) |
-| RewardBench | Reward-model / judge benchmark | [paper](https://arxiv.org/abs/2403.13787) |
-| JudgeBench | Judge reliability benchmark | [paper](https://arxiv.org/abs/2410.12784) |
-
-> Verify links/versions before publishing — these are seed entries.
-
----
-
-## Paper List
-
-> A curated collection of papers on inconsistency in LLM-as-a-Judge, grouped by the **source** of inconsistency rather than by model or task. Each entry gives the paper link, publication date, code (where available), and a one-sentence takeaway. Within each category, papers are ordered chronologically so the progression of ideas is easy to follow.
+## Literature by role
 
 <!-- PAPER-LIST:START -->
 
-### Surveys (1)
+### A. Judge methods and validation (3)
 
-* [A Survey on LLM-as-a-Judge](https://arxiv.org/abs/2411.15594) ![date](https://img.shields.io/badge/date-2024.11-b31b1b.svg)
-  > Maps the LLM-as-a-Judge landscape, including a consistency/reliability cluster covering biases and stability.
+- [SKiM-GPT: combining biomedical literature-based discovery with large language model hypothesis evaluation](docs/evidence.md#skim-gpt) (2026). Scores how strongly the retrieved abstracts support a proposed biomedical relationship.
+- [Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models](docs/evidence.md#knowhd) (2025). Estimates how much of a hypothesis and its rationale is grounded in earlier knowledge.
+- [Designing an LLM-based evaluation system for agentic AI in drug discovery through human alignment](docs/evidence.md#chatinvent-judge) (2026). Validates a rubric for grading a drug-discovery assistant’s responses against expert ratings.
 
-### Position / Order Bias (1)
+### B. Biological studies using a judge (1)
 
-* [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685) ![date](https://img.shields.io/badge/date-2023.06-b31b1b.svg) [![code](https://img.shields.io/badge/code-link-black.svg)](https://github.com/lm-sys/FastChat)
-  > Introduces MT-Bench and documents position, verbosity, and self-enhancement biases in LLM judges.
+- [Large Language Models as Biomedical Hypothesis Generators: A Comprehensive Evaluation](docs/evidence.md#qi-biomedical) (2024). Compares hypothesis generators using a GPT-4 assessment alongside text-overlap and human assessments.
 
-### Length / Verbosity Bias (1)
+### C. General methods and reliability (8)
 
-* [Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators](https://arxiv.org/abs/2404.04475) ![date](https://img.shields.io/badge/date-2024.04-b31b1b.svg) [![code](https://img.shields.io/badge/code-link-black.svg)](https://github.com/tatsu-lab/alpaca_eval)
-  > Regresses out answer length to produce a length-controlled win rate, reducing verbosity bias.
+- [G-Eval: NLG Evaluation using GPT-4 with Better Human Alignment](docs/evidence.md#g-eval) (2023). Operationalizes a written evaluation criterion as model-generated evaluation steps and a score.
+- [FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation](docs/evidence.md#factscore) (2023). Decomposes long answers and estimates the fraction of facts supported by a reference source.
+- [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](docs/evidence.md#mt-bench) (2023). Introduces MT-Bench and documents position, verbosity, and self-enhancement biases in LLM judges.
+- [Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators](docs/evidence.md#length-controlled-alpacaeval) (2024). Regresses out answer length to produce a length-controlled win rate, reducing verbosity bias.
+- [Investigating Non-Transitivity in LLM-as-a-Judge](docs/evidence.md#non-transitivity) (2025). Shows pairwise LLM judgments violate transitivity; analyzes Bradley-Terry limits and round-robin tournament aggregation.
+- [Large Language Models are not Fair Evaluators](docs/evidence.md#fair-evaluators) (2024). Swapping the order of two answers changes the reported winner. The authors test balanced presentation orders to reduce this effect.
+- [LLM Evaluators Recognize and Favor Their Own Generations](docs/evidence.md#self-preference) (2024). Tests whether judges recognize their own text and finds that stronger self-recognition tracks a stronger preference for their own answers.
+- [All Verdicts are Not Equal: Rethinking LLM Judge Reliability](docs/evidence.md#verdict-reliability) (2026). Crosses repeated trials with answer-order swaps and reference labels to distinguish reproducibility, order sensitivity, and correctness.
 
-### Non-Transitivity (1)
+### D. Workflows and adjacent cases (1)
 
-* [Investigating Non-Transitivity in LLM-as-a-Judge](https://arxiv.org/abs/2502.14074) ![date](https://img.shields.io/badge/date-2025.02-b31b1b.svg)
-  > Shows pairwise LLM judgments violate transitivity; analyzes Bradley-Terry limits and round-robin tournament aggregation.
+- [Valsci: an open-source, self-hostable literature review utility for automated large-batch scientific claim verification using large language models](docs/evidence.md#valsci) (2025). Uses retrieved sources to produce a claim-level evidence report.
 
-### Calibration & Reliability (1)
+### E. Related reviews (1)
 
-* [RewardBench: Evaluating Reward Models for Language Modeling](https://arxiv.org/abs/2403.13787) ![date](https://img.shields.io/badge/date-2024.03-b31b1b.svg) [![code](https://img.shields.io/badge/code-link-black.svg)](https://github.com/allenai/reward-bench)
-  > Benchmark probing reward-model / judge reliability across chat, reasoning, and safety prompts.
-
-### Mitigation & Repair (1)
-
-* [RankRefine: Post-hoc Bradley-Terry Refinement for LLM Judge Rankings](https://arxiv.org/abs/2508.16495) ![date](https://img.shields.io/badge/date-2025.08-b31b1b.svg)
-  > Refines noisy judge rankings via post-hoc Bradley-Terry regression.
+- [A survey on LLM-as-a-judge](docs/evidence.md#judge-survey) (2026). Maps the LLM-as-a-Judge landscape, including a consistency/reliability cluster covering biases and stability.
 
 <!-- PAPER-LIST:END -->
 
----
-
 ## Contributing
 
-Contributions are welcome! To add a paper, append an entry to [`papers.yaml`](papers.yaml) and open a PR:
+Edit [papers.yaml](papers.yaml). Copy a record of the same role, assign a permanent ID, and record the publication year, venue and available version identifiers. Put the preprint and published paper on one record. Use the five validation fields independently. Use “Not reported” for an unreported endpoint and “Pending verification” for one that could not be checked. Specify a concrete method location and source before marking a work included.
 
-```yaml
-- title: "Paper Title"
-  url: "https://arxiv.org/abs/XXXX.XXXXX"
-  date: "2026.01"          # YYYY.MM
-  category: "Non-Transitivity"   # must match a category below
-  code: "https://github.com/..."  # optional
-  tldr: "One-sentence summary of the contribution."
-```
-
-Valid categories: `Surveys`, `Position / Order Bias`, `Self-Preference Bias`, `Length / Verbosity Bias`, `Non-Transitivity`, `Stability & Self-Consistency`, `Calibration & Reliability`, `Aggregation Models`, `Mitigation & Repair`.
-
----
-
-## Abbreviations
-
-| Abbr. | Meaning |
-|---|---|
-| BT | Bradley–Terry model |
-| LC | Length-Controlled |
-| RM | Reward Model |
-| LLM-aaJ | LLM-as-a-Judge |
+Install PyYAML with `python3 -m pip install PyYAML`. Run `python3 generate_paper_list.py` to rebuild the index and evidence pages, then `python3 generate_paper_list.py --check` to validate the files. Edit prose outside the marked blocks. Put longer manual notes outside those blocks and reference the permanent paper ID.

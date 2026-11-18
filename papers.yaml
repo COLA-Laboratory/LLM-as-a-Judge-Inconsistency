@@ -1,46 +1,644 @@
-# Paper list data. Edit here, then run: python generate_paper_list.py
-# Fields: title (req), url (req), date "YYYY.MM" (req), category (req),
-#         code (opt), tldr (opt). Category must match one in CATEGORY_ORDER
-#         inside generate_paper_list.py.
-#
-# NOTE: entries below are seeds drawn from prior survey work — verify
-# links, dates, and venues before publishing.
-
-- title: "A Survey on LLM-as-a-Judge"
-  url: "https://arxiv.org/abs/2411.15594"
-  date: "2024.11"
-  category: "Surveys"
-  tldr: "Maps the LLM-as-a-Judge landscape, including a consistency/reliability cluster covering biases and stability."
-
-- title: "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena"
-  url: "https://arxiv.org/abs/2306.05685"
-  date: "2023.06"
-  category: "Position / Order Bias"
-  code: "https://github.com/lm-sys/FastChat"
-  tldr: "Introduces MT-Bench and documents position, verbosity, and self-enhancement biases in LLM judges."
-
-- title: "Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators"
-  url: "https://arxiv.org/abs/2404.04475"
-  date: "2024.04"
-  category: "Length / Verbosity Bias"
-  code: "https://github.com/tatsu-lab/alpaca_eval"
-  tldr: "Regresses out answer length to produce a length-controlled win rate, reducing verbosity bias."
-
-- title: "Investigating Non-Transitivity in LLM-as-a-Judge"
-  url: "https://arxiv.org/abs/2502.14074"
-  date: "2025.02"
-  category: "Non-Transitivity"
-  tldr: "Shows pairwise LLM judgments violate transitivity; analyzes Bradley-Terry limits and round-robin tournament aggregation."
-
-- title: "RewardBench: Evaluating Reward Models for Language Modeling"
-  url: "https://arxiv.org/abs/2403.13787"
-  date: "2024.03"
-  category: "Calibration & Reliability"
-  code: "https://github.com/allenai/reward-bench"
-  tldr: "Benchmark probing reward-model / judge reliability across chat, reasoning, and safety prompts."
-
-- title: "RankRefine: Post-hoc Bradley-Terry Refinement for LLM Judge Rankings"
-  url: "https://arxiv.org/abs/2508.16495"
-  date: "2025.08"
-  category: "Mitigation & Repair"
-  tldr: "Refines noisy judge rankings via post-hoc Bradley-Terry regression."
+# One work per record. Keep version identifiers on the same record.
+- id: skim-gpt
+  title: 'SKiM-GPT: combining biomedical literature-based discovery with large language model hypothesis evaluation'
+  year: 2026
+  publication: BMC Bioinformatics 27, 16 (online 17 December 2025)
+  url: https://doi.org/10.1186/s12859-025-06350-7
+  doi: 10.1186/s12859-025-06350-7
+  code: https://github.com/stewart-lab/skimgpt
+  role: A
+  tasks:
+  - hypothesis quality
+  - claim support
+  methods:
+  - pointwise scoring
+  - retrieval-augmented
+  contribution: Scores how strongly the retrieved abstracts support a proposed biomedical relationship.
+  object: A given disease–gene–drug hypothesis.
+  basis: PubMed titles and abstracts linking the terms, optionally filtered for relevance.
+  output: Signed support score from −2 to +2 and an explanation.
+  location: Implementation, Fig. 1. Results, Score alignment evaluation (Fig. 3), Cost estimation (Table 1), Retrieved
+    text vs. memory.
+  source: https://link.springer.com/article/10.1186/s12859-025-06350-7
+  validation:
+    repeat: Ten independent runs per hypothesis, with score distributions in Fig. 3.
+    expert: Four computational biologists scored the same evidence. Without filtering, median directions agreed
+      for 13 of 14 hypotheses.
+    literature: Real abstracts plus controlled changes to abstract content test sensitivity to the supplied evidence.
+    experimental: Not reported
+    decision: Table 1 compares review of 159 abstracts (8.42 hours per human versus 0.23 hours for the system).
+      Downstream discovery yield was not reported.
+  limitation: Four experts assessed 14 selected hypotheses. Abstract coverage and publication bias restrict the
+    evidence.
+  reading: full text checked
+  screening: included
+  reason: Design and expert comparison of the evidence-based judge are central contributions.
+  versions:
+  - https://doi.org/10.1101/2025.07.28.664797
+- id: knowhd
+  title: 'Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language
+    Models'
+  year: 2025
+  publication: IJCAI 2025, 7849–7857
+  url: https://doi.org/10.24963/ijcai.2025/873
+  doi: 10.24963/ijcai.2025/873
+  arxiv: '2505.14599'
+  code: https://github.com/gzxiong/TruthHypo
+  role: A
+  tasks:
+  - claim support
+  - hypothesis quality
+  methods:
+  - retrieval-augmented
+  - classification
+  contribution: Estimates how much of a hypothesis and its rationale is grounded in earlier knowledge.
+  object: Atomic claims extracted from a hypothesis and its reasoning.
+  basis: Retrieved PubMed passages, knowledge-graph relations, or their union.
+  output: Binary entailment per claim. Equation 3 averages the supported indicators over all claims.
+  location: KnowHD method, Fig. 2 and Eqs. 1–3 (pp. 7851–7852). Open-ended evaluation, Table 4. Extended appendix
+    accompanies the arXiv version.
+  source: https://ijcai.org/proceedings/2025/0873.pdf
+  validation:
+    repeat: Not reported
+    expert: Two experts compared 54 selected pairs. Expert–expert agreement was 80%. Experts selected the more grounded
+      hypothesis as more likely true in 59.26% of pairs.
+    literature: Binary support against a time-limited corpus or graph, assessed separately from downstream benchmark
+      labels.
+    experimental: Not reported
+    decision: Retrospective filtering on benchmark candidates. Prospective laboratory decision benefit was not reported.
+  limitation: Retrieval misses count against groundedness. Selection for a large score gap limits extrapolation
+    to close pairs. The score does not measure novelty or biological truth.
+  reading: full text checked
+  screening: included
+  reason: KnowHD is a separately specified and evaluated biomedical evidence judge.
+- id: chatinvent-judge
+  title: Designing an LLM-based evaluation system for agentic AI in drug discovery through human alignment
+  year: 2026
+  publication: Artificial Intelligence in the Life Sciences 10, 100187
+  url: https://doi.org/10.1016/j.ailsci.2026.100187
+  doi: 10.1016/j.ailsci.2026.100187
+  arxiv: '2608.21057'
+  role: A
+  tasks:
+  - output quality
+  methods:
+  - pointwise scoring
+  - classification
+  contribution: Validates a rubric for grading a drug-discovery assistant’s responses against expert ratings.
+  object: ChatInvent response to a user request.
+  basis: Question, response, evaluation context and expected, accepted and actual tool calls. Rubrics cover completeness,
+    relevancy, structural clarity and scope adherence.
+  output: Allowed label for each dimension plus a short justification. Tool-call correctness is computed separately
+    by direct comparison.
+  location: Fig. 1 and Table 2, then §§5.2–5.4 and Table 4 (journal full text).
+  source: https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf
+  validation:
+    repeat: Three runs on 30 unique questions per judge, with agreement by dimension (§5.3).
+    expert: Five experts. Judge scores compared with the human majority using exact match and weighted kappa. Few-shot
+      optimization raised alignment from 0.80 to 0.86 on ten questions.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: One assistant. Agreement varies by dimension. Prompt optimization was evaluated on ten validation
+    questions. Scores concern the answer delivered to the user.
+  reading: full text checked
+  screening: included
+  reason: The central contribution is judge design and expert alignment in drug discovery.
+- id: qi-biomedical
+  title: 'Large Language Models as Biomedical Hypothesis Generators: A Comprehensive Evaluation'
+  year: 2024
+  publication: COLM 2024
+  url: https://arxiv.org/abs/2407.08940
+  arxiv: '2407.08940'
+  role: B
+  tasks:
+  - hypothesis quality
+  methods:
+  - pointwise scoring
+  contribution: Compares hypothesis generators using a GPT-4 assessment alongside text-overlap and human assessments.
+  object: Generated biomedical hypothesis.
+  basis: Supplied background and four criteria covering novelty, relevance, significance and verifiability.
+  output: GPT-4 supplies a 0–3 score and rationale per dimension.
+  location: §3.1 evaluation metrics, pp. 4–5. §3.4 Human Evaluation and Case Study, Table 1.
+  source: https://arxiv.org/pdf/2407.08940
+  validation:
+    repeat: Not reported
+    expert: Three biomedical experts assessed 100 unseen examples from selected settings using the same rubric.
+      Table 1 compares human and GPT-4 evaluations.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Human review concentrated on selected high-performing settings. Perceived novelty and verifiability
+    are rubric judgments.
+  reading: full text checked
+  screening: included
+  reason: The generator comparison is the main research question. Its scoring module meets all four inclusion criteria.
+  doi: 10.48550/arXiv.2407.08940
+- id: valsci
+  title: 'Valsci: an open-source, self-hostable literature review utility for automated large-batch scientific claim
+    verification using large language models'
+  year: 2025
+  publication: BMC Bioinformatics 26, 140
+  url: https://doi.org/10.1186/s12859-025-06159-4
+  doi: 10.1186/s12859-025-06159-4
+  role: D
+  tasks:
+  - claim support
+  methods:
+  - retrieval-augmented
+  - classification
+  contribution: Uses retrieved sources to produce a claim-level evidence report.
+  object: User-supplied scientific claim.
+  basis: Supporting and contradictory excerpts from retrieved papers, with abstracts as fallback.
+  output: Cited synthesis and a categorical verdict from contradiction to high support, including mixed or missing
+    evidence.
+  location: Implementation, report synthesis and the published “Synthesize report” system/user prompts. Results,
+    SciFact evaluation.
+  source: https://link.springer.com/article/10.1186/s12859-025-06159-4
+  validation:
+    repeat: Pending verification
+    expert: Pending verification
+    literature: Compared with SciFact labels and audited generated citations.
+    experimental: Not reported
+    decision: Workflow-level time comparison with undergraduate literature review. The study does not isolate the
+      judge or measure successful discoveries.
+  limitation: Retrieval coverage constrains the verdict. SciFact performance does not establish the value of prospective
+    biological decisions.
+  reading: full text checked
+  screening: included
+  reason: Adjacent scientific literature-review workflow with an identifiable judge. Its target is general claim
+    verification.
+  code: https://github.com/bricee98/Valsci
+- id: g-eval
+  title: 'G-Eval: NLG Evaluation using GPT-4 with Better Human Alignment'
+  year: 2023
+  publication: EMNLP 2023
+  url: https://doi.org/10.18653/v1/2023.emnlp-main.153
+  doi: 10.18653/v1/2023.emnlp-main.153
+  arxiv: '2303.16634'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pointwise scoring
+  contribution: Operationalizes a written evaluation criterion as model-generated evaluation steps and a score.
+  object: Generated summary or dialogue response.
+  basis: Task instructions, criterion, source context and evaluation steps.
+  output: Dimension score with probability weighting over rating choices.
+  location: §2, scoring function and Fig. 1.
+  source: https://aclanthology.org/2023.emnlp-main.153.pdf
+  validation:
+    repeat: Not reported
+    expert: Human-rating correlations reported on NLG datasets. Biomedical expert alignment was not reported.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Text quality benchmarks supply the evidence for human alignment. Transfer to biology requires a new
+    rubric and validation.
+  reading: full text checked
+  screening: included
+  reason: Template for specifying criteria and comparing rubric scores with human ratings.
+- id: factscore
+  title: 'FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation'
+  year: 2023
+  publication: EMNLP 2023
+  url: https://doi.org/10.18653/v1/2023.emnlp-main.741
+  doi: 10.18653/v1/2023.emnlp-main.741
+  arxiv: '2305.14251'
+  role: C
+  tasks:
+  - claim support
+  methods:
+  - retrieval-augmented
+  - classification
+  contribution: Decomposes long answers and estimates the fraction of facts supported by a reference source.
+  object: Atomic factual assertions in generated biographies.
+  basis: Retrieved passages from a designated knowledge source.
+  output: Support decisions aggregated into factual precision.
+  location: §§3–4, human evaluation and automatic estimation.
+  source: https://aclanthology.org/2023.emnlp-main.741.pdf
+  validation:
+    repeat: Not reported
+    expert: Not reported
+    literature: Estimator compared with human source-based atomic-fact annotations.
+    experimental: Not reported
+    decision: Not reported
+  limitation: A biography benchmark with a fixed knowledge source offers limited evidence for novel scientific claims.
+  reading: full text checked
+  screening: included
+  reason: Methodological precursor to claim-level groundedness metrics.
+- id: mt-bench
+  title: Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+  year: 2023
+  publication: NeurIPS 2023 Datasets and Benchmarks
+  url: https://arxiv.org/abs/2306.05685
+  arxiv: '2306.05685'
+  code: https://github.com/lm-sys/FastChat
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pointwise scoring
+  - pairwise comparison
+  contribution: Introduces MT-Bench and documents position, verbosity, and self-enhancement biases in LLM judges.
+  object: One or two assistant replies.
+  basis: Question, grading instructions and optional reference solution.
+  output: Single grade or pairwise winner/tie.
+  location: §§3.1, 3.3 and 4. Appendix grading prompts, Figs. 5–7.
+  source: https://arxiv.org/pdf/2306.05685
+  validation:
+    repeat: Pending verification for identical-input repetitions. The order-swap test changes the input.
+    expert: Compares model judgments with expert votes on MT-Bench and crowd preferences in Arena.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Chat preferences leave biological accuracy untested.
+  reading: full text checked
+  screening: included
+  reason: Baseline for designing pointwise and pairwise biological rubrics.
+  legacy:
+  - main
+  - draft
+  doi: 10.52202/075280-2020
+- id: length-controlled-alpacaeval
+  title: 'Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators'
+  year: 2024
+  publication: COLM 2024
+  url: https://arxiv.org/abs/2404.04475
+  arxiv: '2404.04475'
+  code: https://github.com/tatsu-lab/alpaca_eval
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  contribution: Regresses out answer length to produce a length-controlled win rate, reducing verbosity bias.
+  object: Two instruction-following answers.
+  basis: AlpacaEval pairwise preference protocol. Regression adjusts for answer lengths.
+  output: Judge preference followed by a statistically adjusted win rate.
+  location: Method for length-controlled win rates and Fig. 3 length intervention.
+  source: https://arxiv.org/pdf/2404.04475
+  validation:
+    repeat: Not reported
+    expert: Compared ranking correlations with Chatbot Arena human preferences. Domain-expert validation was not
+      reported.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Length adjustment targets a specified confounder and depends on model assumptions.
+  reading: full text checked
+  screening: included
+  reason: Helps audit whether detailed scientific outputs win because they are longer.
+  legacy:
+  - main
+  - draft
+  doi: 10.48550/arXiv.2404.04475
+- id: non-transitivity
+  title: Investigating Non-Transitivity in LLM-as-a-Judge
+  year: 2025
+  publication: ICML 2025
+  url: https://arxiv.org/abs/2502.14074
+  arxiv: '2502.14074'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  - ranking
+  contribution: Shows pairwise LLM judgments violate transitivity; analyzes Bradley-Terry limits and round-robin
+    tournament aggregation.
+  object: Pairs of answers to a common instruction.
+  basis: AlpacaEval judge prompt and position-switched comparisons.
+  output: Pairwise preferences aggregated across tournament schedules.
+  location: Judge models and Position Switching, p. 4. Appendix G.1 prompt.
+  source: https://arxiv.org/pdf/2502.14074
+  validation:
+    repeat: Not reported
+    expert: Comparison with Arena crowd rankings. Biological expert labels were not reported.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Model-level instruction-following rankings provide no direct test of biological candidate selection.
+  reading: full text checked
+  screening: included
+  reason: Supplies a diagnostic for cyclic preferences before aggregating candidate rankings.
+  legacy:
+  - main
+  - draft
+  doi: 10.48550/arXiv.2502.14074
+- id: fair-evaluators
+  title: Large Language Models are not Fair Evaluators
+  year: 2024
+  publication: ACL 2024
+  url: https://doi.org/10.18653/v1/2024.acl-long.511
+  doi: 10.18653/v1/2024.acl-long.511
+  arxiv: '2305.17926'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  contribution: Swapping the order of two answers changes the reported winner. The authors test balanced presentation
+    orders to reduce this effect.
+  object: Two answers to the same benchmark question.
+  basis: Question and comparison instructions with the presentation order reversed.
+  output: Scores/preferences combined across orderings.
+  location: Evaluation template and balanced position calibration, pp. 2–4 of the preprint.
+  source: https://arxiv.org/pdf/2305.17926
+  validation:
+    repeat: Not reported
+    expert: Comparison with human preferences on the evaluation set. Biological expertise was not assessed.
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: An ordering control leaves validity of the underlying criterion unresolved.
+  reading: full text checked
+  screening: included
+  reason: A practical order-swap control for ranking scientific responses.
+  legacy:
+  - draft
+- id: self-preference
+  title: LLM Evaluators Recognize and Favor Their Own Generations
+  year: 2024
+  publication: NeurIPS 2024
+  url: https://arxiv.org/abs/2404.13076
+  arxiv: '2404.13076'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pointwise scoring
+  - pairwise comparison
+  contribution: Tests whether judges recognize their own text and finds that stronger self-recognition tracks a
+    stronger preference for their own answers.
+  object: Model-written summaries.
+  basis: Summary evaluation instructions in individual and paired conditions, with separate authorship-recognition
+    tasks.
+  output: Individual 1–5 quality rating or pairwise preference.
+  location: Individual and pairwise measurements, p. 2.
+  source: https://arxiv.org/pdf/2404.13076
+  validation:
+    repeat: Not reported
+    expert: Not reported
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Experiments establish a risk in summarization. Its magnitude on hypotheses is unknown.
+  reading: full text checked
+  screening: included
+  reason: Tests a confounder when a hypothesis generator also evaluates its own outputs.
+  legacy:
+  - draft
+  doi: 10.48550/arXiv.2404.13076
+- id: verdict-reliability
+  title: 'All Verdicts are Not Equal: Rethinking LLM Judge Reliability'
+  year: 2026
+  publication: AACL-IJCNLP 2026
+  url: https://doi.org/10.18653/2026.aacl-long.207
+  doi: 10.18653/2026.aacl-long.207
+  arxiv: '2610.12083'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  - pointwise scoring
+  contribution: Crosses repeated trials with answer-order swaps and reference labels to distinguish reproducibility,
+    order sensitivity, and correctness.
+  object: Responses in preference/correctness benchmarks.
+  basis: Question and evaluation instructions varied across prompt formats, orders and repetitions.
+  output: Repeated verdicts compared with reference labels.
+  location: §4.3 Prompt Formats and repeated-trial evaluation.
+  source: https://arxiv.org/pdf/2610.12083
+  validation:
+    repeat: Repeated trials within condition plus order changes. Agreement with reference labels is evaluated separately.
+    expert: Not reported
+    literature: Not reported
+    experimental: Not reported
+    decision: Not reported
+  limitation: Reference labels and task difficulty affect interpretation outside the benchmark.
+  reading: full text checked
+  screening: included
+  reason: Separates repeatability, order invariance and agreement with reference labels.
+  legacy:
+  - draft
+- id: judge-survey
+  title: A survey on LLM-as-a-judge
+  year: 2026
+  publication: The Innovation, article 101253 (arXiv first posted 2024)
+  url: https://doi.org/10.1016/j.xinn.2025.101253
+  doi: 10.1016/j.xinn.2025.101253
+  arxiv: '2411.15594'
+  role: E
+  tasks: []
+  methods: []
+  contribution: Maps the LLM-as-a-Judge landscape, including a consistency/reliability cluster covering biases and
+    stability.
+  object: Not applicable to the survey role.
+  basis: Not applicable to the survey role.
+  output: Not applicable to the survey role.
+  location: §§2–4, especially agreement, bias and robustness in §4.
+  source: https://arxiv.org/html/2411.15594v6
+  validation:
+    repeat: Not applicable to citation-tracing use of this review.
+    expert: Not applicable to citation-tracing use of this review.
+    literature: Not applicable to citation-tracing use of this review.
+    experimental: Not applicable to citation-tracing use of this review.
+    decision: Not applicable to citation-tracing use of this review.
+  limitation: Broad survey. Biology-specific claims require the underlying primary paper.
+  reading: full text checked
+  screening: included
+  reason: Citation tracing and terminology. Counted only as a review.
+  legacy:
+  - main
+  - draft
+- id: rewardbench
+  title: 'RewardBench: Evaluating Reward Models for Language Modeling'
+  year: 2025
+  publication: Findings of NAACL 2025
+  url: https://arxiv.org/abs/2403.13787
+  arxiv: '2403.13787'
+  code: https://github.com/allenai/reward-bench
+  role: C
+  tasks:
+  - output quality
+  methods: []
+  contribution: Benchmark probing reward-model / judge reliability across chat, reasoning, and safety prompts.
+  object: Preferred and rejected outputs for a prompt.
+  basis: Constructed prompt–chosen–rejected triples spanning chat, reasoning and safety.
+  output: Whether a reward model assigns the preferred response the higher reward. A direct prompted-LLM verdict
+    was not established in this audit.
+  location: Abstract (screening decision only).
+  source: https://arxiv.org/abs/2403.13787
+  validation:
+    repeat: Pending verification
+    expert: Pending verification
+    literature: Pending verification
+    experimental: Pending verification
+    decision: Pending verification
+  limitation: Method-level evidence has not been extracted for this catalogue.
+  reading: abstract only
+  screening: excluded
+  reason: Historical benchmark for reward models. Its benchmark labels alone do not establish biological LLM judgment.
+  legacy:
+  - main
+  - draft
+  doi: 10.18653/v1/2025.findings-naacl.96
+- id: rankrefine
+  title: Post Hoc Regression Refinement via Pairwise Rankings
+  year: 2025
+  publication: NeurIPS 2025
+  url: https://arxiv.org/abs/2508.16495
+  arxiv: '2508.16495'
+  role: C
+  tasks: []
+  methods:
+  - pairwise comparison
+  contribution: Combines a regression prediction with information from pairwise comparisons.
+  object: Items whose continuous property is to be predicted.
+  basis: Comparisons with reference items having known values.
+  output: Pairwise order information used to refine a numerical prediction.
+  location: Abstract (screening decision only).
+  source: https://arxiv.org/abs/2508.16495
+  validation:
+    repeat: Pending verification
+    expert: Pending verification
+    literature: Pending verification
+    experimental: Pending verification
+    decision: Pending verification
+  limitation: Method-level evidence has not been extracted for this catalogue.
+  reading: abstract only
+  screening: excluded
+  reason: The linked paper refines continuous property estimates with pairwise rankings. The legacy title misidentified
+    the method as repair of LLM judge rankings.
+  legacy:
+  - main
+  doi: 10.48550/arXiv.2508.16495
+- id: same-input
+  title: 'Same Input, Different Scores: A Multi Model Study on the Inconsistency of LLM Judge'
+  year: 2026
+  publication: arXiv preprint
+  url: https://arxiv.org/abs/2603.04417
+  arxiv: '2603.04417'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pointwise scoring
+  contribution: Repeats scoring on identical inputs to measure within-judge variation, between-judge differences,
+    and sensitivity to sampling temperature.
+  object: Enterprise chatbot answers.
+  basis: Question and answer with attribute definitions including relevance, reliability and completeness.
+  output: Per-attribute numeric ratings.
+  location: §3 Experiment, attribute definitions and temperature settings.
+  source: https://arxiv.org/pdf/2603.04417
+  validation:
+    repeat: Compares repeated scores within model and across two temperatures.
+    expert: Pending verification
+    literature: Pending verification
+    experimental: Not reported
+    decision: Not reported
+  limitation: Application to biological decisions has not been demonstrated.
+  reading: full text checked
+  screening: excluded
+  reason: Archived after screening. The enterprise scoring task overlaps the repeatability diagnostics already retained.
+  legacy:
+  - draft
+  doi: 10.48550/arXiv.2603.04417
+- id: coin-flip
+  title: The Coin Flip Judge? Reliability and Bias in LLM-as-a-Judge Evaluation
+  year: 2026
+  publication: arXiv preprint
+  url: https://arxiv.org/abs/2606.13685
+  arxiv: '2606.13685'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  - pointwise scoring
+  contribution: Compares repeated pairwise verdicts with pointwise score gaps and estimates how many votes recover
+    a reference verdict in the studied sample.
+  object: Pairs of answers on 29 selected questions.
+  basis: Question, two competitive responses, evaluation prompt and controlled order/settings.
+  output: A/B/tie or a separate 1–10 pointwise grade.
+  location: Definitions 1–4 and §4 Methodology.
+  source: https://arxiv.org/pdf/2606.13685
+  validation:
+    repeat: Compares repeated vote distributions with pointwise score gaps and a 50-trial reference verdict.
+    expert: Pending verification
+    literature: Pending verification
+    experimental: Not reported
+    decision: Not reported
+  limitation: Application to biological decisions has not been demonstrated.
+  reading: full text checked
+  screening: excluded
+  reason: Archived as a supplementary voting study. The 50-trial reference is the judge’s own consensus, so it supplies
+    no external criterion for a biological verdict.
+  legacy:
+  - draft
+  doi: 10.48550/arXiv.2606.13685
+- id: judgebench
+  title: 'JudgeBench: A Benchmark for Evaluating LLM-based Judges'
+  year: 2025
+  publication: ICLR 2025
+  url: https://arxiv.org/abs/2410.12784
+  arxiv: '2410.12784'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  contribution: Tests whether judges identify the correct response in hard pairs spanning knowledge, reasoning,
+    mathematics, and code.
+  object: Two responses to a challenging question.
+  basis: The original question and a response pair with an objectively checkable quality distinction.
+  output: Preferred response, evaluated against the reference choice.
+  location: Abstract (screening decision only).
+  source: https://arxiv.org/abs/2410.12784
+  validation:
+    repeat: Pending verification
+    expert: Pending verification
+    literature: Pending verification
+    experimental: Pending verification
+    decision: Pending verification
+  limitation: Method-level evidence has not been extracted for this catalogue.
+  reading: abstract only
+  screening: excluded
+  reason: General benchmark. The present collection prioritizes transferable methods already used in the reading
+    guide.
+  legacy:
+  - draft
+  doi: 10.48550/arXiv.2410.12784
+- id: pairwise-alignment
+  title: 'Aligning with Human Judgement: The Role of Pairwise Preference in Large Language Model Evaluators'
+  year: 2024
+  publication: COLM 2024
+  url: https://arxiv.org/abs/2403.16950
+  arxiv: '2403.16950'
+  role: C
+  tasks:
+  - output quality
+  methods:
+  - pairwise comparison
+  contribution: Studies residual disagreement after bias calibration and uses pairwise human preferences to improve
+    evaluator alignment.
+  object: Generated language-model answers.
+  basis: Human preference data inform evaluator alignment.
+  output: Pending verification
+  location: Abstract (screening decision only).
+  source: https://arxiv.org/abs/2403.16950
+  validation:
+    repeat: Pending verification
+    expert: Pending verification
+    literature: Pending verification
+    experimental: Pending verification
+    decision: Pending verification
+  limitation: Method-level evidence has not been extracted for this catalogue.
+  reading: abstract only
+  screening: excluded
+  reason: Historical evaluator-training reference. Human preference alignment is covered by direct drug-discovery
+    evidence in this reading set.
+  legacy:
+  - draft
+  doi: 10.48550/arXiv.2403.16950
