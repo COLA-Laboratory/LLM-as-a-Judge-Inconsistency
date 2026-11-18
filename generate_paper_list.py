@@ -6,10 +6,12 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 
-from assets.validation_map import evidence_map
+from assets.validation_map import BRANCH_TITLES, FLOW, STUDY_TESTS, evidence_map, framework
 
 ROOT = Path(__file__).resolve().parent
-BRANCHES = ("claim support", "hypothesis qualities", "research outputs")
+BRANCHES = tuple(BRANCH_TITLES)
+OUTCOMES = dict(review_time="Review time", retrospective="Retrospective selection",
+                prospective="Prospective experimental or discovery benefit")
 ROLES = dict(A="Judge methods and validation", B="Biological studies using a judge",
              C="General methods and reliability", D="Workflows and adjacent cases", E="Related reviews")
 TASKS = {"hypothesis quality", "claim support", "mechanism explanation", "experimental design",
@@ -53,17 +55,23 @@ def validate(records):
         for field, vocab in [("tasks", TASKS), ("methods", METHODS)]:
             tags = paper[field]
             require(isinstance(tags, list) and set(tags) <= vocab and len(tags) == len(set(tags)), f"{key}: {field}")
-        require(set(paper["validation"]) == set(VALIDATION), f"{key}: missing validation endpoint")
         core = paper["role"] in {"A", "B"} and paper["screening"] == "included"
+        expected = STUDY_TESTS if core else VALIDATION
+        require(set(paper["validation"]) == set(expected), f"{key}: missing validation field")
         if core:
+            require(set(paper.get("outcomes", {})) == set(OUTCOMES), f"{key}: missing outcome")
             home = paper.get("homepage", {})
+            flow = home.get("flow", {})
+            require(set(flow) == set(FLOW) and all(isinstance(v, str) and v.strip()
+                    for v in flow.values()), f"{key}: framework fields")
             require(home.get("branch") in BRANCHES, f"{key}: unknown homepage branch")
             require(all(isinstance(home.get(k), str) and home[k].strip() for k in
                         ("name", "venue", "task", "method", "validation")), f"{key}: comparison fields")
-        for field, item in paper["validation"].items():
+        assessments = {**paper["validation"], **paper.get("outcomes", {})}
+        for field, item in assessments.items():
             if isinstance(item, dict):
                 require(item.get("status") == "reported" and all(isinstance(item.get(k), str) and
-                        item[k].strip() for k in ("label", "detail")), f"{key}: invalid {field} evidence")
+                        item[k].strip() for k in ("label", "detail", "location")), f"{key}: invalid {field} evidence")
             else:
                 require(isinstance(item, str) and item.strip(), f"{key}: empty {field}")
                 if core:
@@ -146,8 +154,18 @@ def evidence(records):
             lines += ["Tasks: " + ", ".join(p["tasks"]) + ". Methods: " + ", ".join(p["methods"]) + ".", ""]
         lines += [f"- **Object** — {p['object']}", f"- **Criteria and evidence** — {p['basis']}",
                   f"- **Judge output** — {p['output']}", f"- **Method location** — {p['location']} [Source]({p['source']})"]
-        for key, label in VALIDATION.items():
-            lines.append(f"- **{label}** — {detail(p['validation'][key])}")
+        if "outcomes" in p:
+            for field, header, labels in [("validation", "Tests of the judge", STUDY_TESTS),
+                                          ("outcomes", "Measured use and benefit", OUTCOMES)]:
+                lines += ["", f"**{header}**", ""]
+                for key, label in labels.items():
+                    item = p[field][key]
+                    citation = f" [{item['location']}]({p['source']})" if isinstance(item, dict) else ""
+                    lines.append(f"- **{label}** — {detail(item)}{citation}")
+            lines.append("")
+        else:
+            for key, label in VALIDATION.items():
+                lines.append(f"- **{label}** — {detail(p['validation'][key])}")
         lines += [f"- **Limitation** — {p['limitation']}", f"- **Screening rationale** — {p['reason']}"]
         links = []
         for key, prefix in [("doi", "https://doi.org/"), ("arxiv", "https://arxiv.org/abs/"), ("code", "")]:
@@ -206,6 +224,7 @@ def main():
     for filename, render in [("docs/evidence.md", evidence), ("docs/screening.md", screening)]:
         path = ROOT / filename
         pages[path] = replace_block(path.read_text(encoding="utf-8"), render(records))
+    pages[ROOT / "assets/framework.svg"] = framework(core)
     pages[ROOT / "assets/validation-map.svg"] = evidence_map(core)
     check_links(pages)
     for path, content in pages.items():

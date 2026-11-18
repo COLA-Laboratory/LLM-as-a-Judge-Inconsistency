@@ -1,6 +1,6 @@
 # Evidence notes
 
-Each entry identifies what the judge saw, what it returned and how the authors assessed it. “Full text checked” means the relevant passages were inspected. Literature support concerns agreement with retrieved evidence. Experimental confirmation refers to an independent biological experiment on the judged claim. Decision benefit concerns changes in choices, costs, time or discovery yield, with the unit and setting stated where reported.
+For each core study, the method describes the information available when the judge produces a verdict. The tests section identifies how the authors examined the judge. The outcomes section records measured review time, retrospective selection and prospective experimental benefit separately. A dash in the homepage map means that the paper did not report that specific test. “Pending verification” marks unresolved evidence. Background and historical entries retain their original screening fields.
 
 [Reading guide](../README.md#reading-guide) · [Screening decisions](screening.md)
 
@@ -20,11 +20,20 @@ Tasks: hypothesis quality, claim support. Methods: pointwise scoring, retrieval-
 - **Criteria and evidence** — It reads PubMed titles and abstracts linking the terms, optionally filtered for relevance.
 - **Judge output** — It returns a support score from −2 to +2 and explains its rating.
 - **Method location** — Implementation, Fig. 1. Results, Score alignment evaluation (Fig. 3), Cost estimation (Table 1), Retrieved text vs. memory. [Source](https://link.springer.com/article/10.1186/s12859-025-06350-7)
-- **Repeated judgments** — Ten independent runs per hypothesis, with score distributions in Fig. 3.
-- **Expert agreement** — Four computational biologists scored the same evidence. Without filtering, median directions agreed for 13 of 14 hypotheses.
-- **Literature support** — Real abstracts plus controlled changes to abstract content test sensitivity to the supplied evidence.
-- **Biological experimental validation** — Not reported
-- **Decision or efficiency benefit** — Table 1 compares review of 159 abstracts (8.42 hours per human versus 0.23 hours for the system). Downstream discovery yield was not reported.
+
+**Tests of the judge**
+
+- **Repeated calls** — Ten independent calls for each of 14 selected hypotheses. Fig. 3 plots score distributions. [Results, Score alignment evaluation, Fig. 3](https://link.springer.com/article/10.1186/s12859-025-06350-7)
+- **Expert comparison** — Four computational biologists read the same abstracts. Before filtering, the median model and expert scores agreed in direction on 13 of 14 hypotheses. [Results, Score alignment evaluation, Fig. 3A](https://link.springer.com/article/10.1186/s12859-025-06350-7)
+- **Controlled evidence perturbation** — The authors supplied synthetic abstracts with positive, neutral or negative evidence and compared conditions including real abstracts and no text. Ratings responded to the supplied material. Fig. 4 separately measures relevance-filter performance. [Results, Retrieved text vs. memory, Fig. 5B–D](https://link.springer.com/article/10.1186/s12859-025-06350-7)
+- **External relation labels** — Not reported
+
+**Measured use and benefit**
+
+- **Review time** — For 159 abstracts, mean time was 8.42 hours per human reviewer and 0.23 hours for the system. This times a review task. [Results, Cost estimation, Table 1](https://link.springer.com/article/10.1186/s12859-025-06350-7)
+- **Retrospective selection** — Not reported
+- **Prospective experimental or discovery benefit** — Not reported
+
 - **Limitation** — The selected hypotheses cover 14 relationships. Abstract coverage and publication bias restrict the evidence.
 - **Screening rationale** — Design and expert comparison of the evidence-based judge are central contributions.
 
@@ -43,12 +52,21 @@ Tasks: claim support, hypothesis quality. Methods: retrieval-augmented, classifi
 - **Object** — The judge evaluates atomic claims extracted from a hypothesis and its reasoning.
 - **Criteria and evidence** — It receives retrieved PubMed passages, knowledge-graph relations, or both.
 - **Judge output** — Each claim receives a binary support decision. Equation 3 averages these decisions across claims.
-- **Method location** — KnowHD method, Fig. 2 and Eqs. 1–3 (pp. 7851–7852). Open-ended evaluation, Table 4. Extended appendix accompanies the arXiv version. [Source](https://ijcai.org/proceedings/2025/0873.pdf)
-- **Repeated judgments** — Not reported
-- **Expert agreement** — Two experts compared 54 selected pairs. Expert–expert agreement was 80%. Experts selected the more grounded hypothesis as more likely true in 59.26% of pairs.
-- **Literature support** — Binary support against a time-limited corpus or graph, assessed separately from downstream benchmark labels.
-- **Biological experimental validation** — Not reported
-- **Decision or efficiency benefit** — Retrospective filtering on benchmark candidates. Prospective laboratory decision benefit was not reported.
+- **Method location** — §3, Fig. 2 and Eqs. 1–3 for the judge; §4.3, Fig. 3 for external labels; §4.4, Fig. 4 for retrospective selection; §5, Table 4 for the expert study. [Source](https://ijcai.org/proceedings/2025/0873.pdf)
+
+**Tests of the judge**
+
+- **Repeated calls** — Not reported
+- **Expert comparison** — Two experts chose the more likely true hypothesis in 54 pairs selected for a large groundedness gap. Expert–expert agreement was 80%. Experts chose the higher-grounded item in 59.26% of pairs. Neither percentage is biological accuracy. [§5, Human Study on Open-ended Tasks, Table 4](https://ijcai.org/proceedings/2025/0873.pdf)
+- **Controlled evidence perturbation** — Not reported
+- **External relation labels** — The authors grouped hypotheses by KnowHD score and measured relation-prediction accuracy against TruthHypo labels. Fig. 3 plots groups with at least ten hypotheses. This evaluates the association at hypothesis level; individual entailment decisions lack a claim-level gold standard in this test. [§§2.1–2.3 and §4.3, Fig. 3](https://ijcai.org/proceedings/2025/0873.pdf)
+
+**Measured use and benefit**
+
+- **Review time** — Not reported
+- **Retrospective selection** — For each input, select the highest-grounded of five generated candidates. Fig. 4 compares resulting GPT-4o-mini relation accuracy with greedy decoding and majority voting. The combined graph-and-literature generation setting reached 63.44%; the advantage varied by setting. [§4.4, Fig. 4](https://ijcai.org/proceedings/2025/0873.pdf)
+- **Prospective experimental or discovery benefit** — Not reported
+
 - **Limitation** — Retrieval misses count against groundedness. Selection for a large score gap limits extrapolation to close pairs. The score does not measure novelty or biological truth.
 - **Screening rationale** — KnowHD is a separately specified and evaluated biomedical evidence judge.
 
@@ -68,11 +86,20 @@ Tasks: output quality. Methods: pointwise scoring, classification.
 - **Criteria and evidence** — It sees the request, response, evaluation context and expected, accepted and actual tool calls.
 - **Judge output** — It assigns a rubric label and justification for completeness, relevancy, structural clarity and scope adherence. A separate program checks tool-call correctness.
 - **Method location** — Fig. 1 and Table 2, then §§5.2–5.4 and Table 4 (journal full text). [Source](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf)
-- **Repeated judgments** — Three runs on 30 unique questions per judge, with agreement by dimension (§5.3).
-- **Expert agreement** — Five experts provided the reference ratings. After few-shot optimization, exact agreement with the human majority rose from 0.80 to 0.86 on ten validation questions.
-- **Literature support** — Not reported
-- **Biological experimental validation** — Not reported
-- **Decision or efficiency benefit** — Not reported
+
+**Tests of the judge**
+
+- **Repeated calls** — Four judge models were each scheduled for three trials on 30 unique questions. Claude returned usable results for 28 questions. The authors report within-model consistency by rubric dimension. [§5.3, Intra-LLM agreement, Fig. 3](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf)
+- **Expert comparison** — Five experts annotated assistant responses. Judge ratings were compared with the human majority. On a ten-question validation split for prompt optimization, agreement rose from 0.80 to 0.86. The tool-call check uses direct comparison. [Fig. 1, Table 2, §§5.2–5.4 and Table 4](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf)
+- **Controlled evidence perturbation** — Not reported
+- **External relation labels** — Not reported
+
+**Measured use and benefit**
+
+- **Review time** — Not reported
+- **Retrospective selection** — Not reported
+- **Prospective experimental or discovery benefit** — Not reported
+
 - **Limitation** — One assistant. Agreement varies by dimension. Prompt optimization was evaluated on ten validation questions. Scores concern the answer delivered to the user.
 - **Screening rationale** — The central contribution is judge design and expert alignment in drug discovery.
 
@@ -92,11 +119,20 @@ Tasks: hypothesis quality. Methods: pointwise scoring.
 - **Criteria and evidence** — It receives the scientific background and criteria for novelty, relevance, significance and verifiability.
 - **Judge output** — It assigns each dimension a score from 0 to 3 and explains the score.
 - **Method location** — §3.1 evaluation metrics, pp. 4–5. §3.4 Human Evaluation and Case Study, Table 1. [Source](https://arxiv.org/pdf/2407.08940)
-- **Repeated judgments** — Not reported
-- **Expert agreement** — Three biomedical experts rated 100 unseen examples. Across the selected settings in Table 1, Spearman correlations of model and human average ratings range from 0.73 to 0.94.
-- **Literature support** — Not reported
-- **Biological experimental validation** — Not reported
-- **Decision or efficiency benefit** — Not reported
+
+**Tests of the judge**
+
+- **Repeated calls** — Not reported
+- **Expert comparison** — Three biomedical experts rated 100 unseen examples from selected generator settings. Table 1 reports Spearman correlations of 0.73–0.94 between average model and human ratings across the listed settings. The paper also evaluates generators with reference hypotheses; those comparisons do not validate individual judge scores. [§3.1, Evaluation metrics; §3.4, Human Evaluation and Case Study, Table 1](https://arxiv.org/pdf/2407.08940)
+- **Controlled evidence perturbation** — Not reported
+- **External relation labels** — Not reported
+
+**Measured use and benefit**
+
+- **Review time** — Not reported
+- **Retrospective selection** — Not reported
+- **Prospective experimental or discovery benefit** — Not reported
+
 - **Limitation** — Human review concentrated on selected high-performing settings. Perceived novelty and verifiability are rubric judgments.
 - **Screening rationale** — The generator comparison is the main research question. Its scoring module meets all four inclusion criteria.
 

@@ -23,23 +23,23 @@
   validation:
     repeat:
       status: reported
-      label: 10 runs
-      detail: Ten independent runs per hypothesis, with score distributions in Fig. 3.
+      label: 10 runs per hypothesis
+      detail: Ten independent calls for each of 14 selected hypotheses. Fig. 3 plots score distributions.
+      location: Results, Score alignment evaluation, Fig. 3
     expert:
       status: reported
-      label: 4 experts
-      detail: Four computational biologists scored the same evidence. Without filtering, median directions agreed
-        for 13 of 14 hypotheses.
-    literature:
+      label: 4 experts / 14 hypotheses
+      detail: Four computational biologists read the same abstracts. Before filtering, the median model and expert
+        scores agreed in direction on 13 of 14 hypotheses.
+      location: Results, Score alignment evaluation, Fig. 3A
+    perturbation:
       status: reported
-      label: Abstract edits
-      detail: Real abstracts plus controlled changes to abstract content test sensitivity to the supplied evidence.
-    experimental: Not reported
-    decision:
-      status: reported
-      label: Review time
-      detail: Table 1 compares review of 159 abstracts (8.42 hours per human versus 0.23 hours for the system).
-        Downstream discovery yield was not reported.
+      label: Synthetic abstract polarity
+      detail: The authors supplied synthetic abstracts with positive, neutral or negative evidence and compared
+        conditions including real abstracts and no text. Ratings responded to the supplied material. Fig. 4 separately
+        measures relevance-filter performance.
+      location: Results, Retrieved text vs. memory, Fig. 5B–D
+    external: Not reported
   limitation: The selected hypotheses cover 14 relationships. Abstract coverage and publication bias restrict the
     evidence.
   reading: full text checked
@@ -53,8 +53,22 @@
     venue: BMC Bioinformatics
     task: Literature support for a proposed disease–gene–drug link
     method: Rates support from −2 to +2 using retrieved abstracts.
-    validation: Judge and expert medians agreed in direction on 13 of 14 hypotheses before filtering. Abstract
-      coverage limits the verdict.
+    validation: Judge and expert medians agreed in direction on 13 of 14 hypotheses before filtering. Abstract coverage
+      limits the verdict.
+    flow:
+      object: Proposed disease–gene–drug link
+      basis: Retrieved PubMed abstracts
+      verdict: Support score (−2 to +2) and rationale
+      use: Review support for a proposed link
+  outcomes:
+    review_time:
+      status: reported
+      label: Abstract review
+      detail: For 159 abstracts, mean time was 8.42 hours per human reviewer and 0.23 hours for the system. This
+        times a review task.
+      location: Results, Cost estimation, Table 1
+    retrospective: Not reported
+    prospective: Not reported
 - id: knowhd
   title: 'Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language
     Models'
@@ -75,26 +89,26 @@
   object: The judge evaluates atomic claims extracted from a hypothesis and its reasoning.
   basis: It receives retrieved PubMed passages, knowledge-graph relations, or both.
   output: Each claim receives a binary support decision. Equation 3 averages these decisions across claims.
-  location: KnowHD method, Fig. 2 and Eqs. 1–3 (pp. 7851–7852). Open-ended evaluation, Table 4. Extended appendix
-    accompanies the arXiv version.
+  location: §3, Fig. 2 and Eqs. 1–3 for the judge; §4.3, Fig. 3 for external labels; §4.4, Fig. 4 for retrospective
+    selection; §5, Table 4 for the expert study.
   source: https://ijcai.org/proceedings/2025/0873.pdf
   validation:
     repeat: Not reported
     expert:
       status: reported
-      label: 54 pairs
-      detail: Two experts compared 54 selected pairs. Expert–expert agreement was 80%. Experts selected the more
-        grounded hypothesis as more likely true in 59.26% of pairs.
-    literature:
+      label: 2 experts / 54 pairs
+      detail: Two experts chose the more likely true hypothesis in 54 pairs selected for a large groundedness gap.
+        Expert–expert agreement was 80%. Experts chose the higher-grounded item in 59.26% of pairs. Neither percentage
+        is biological accuracy.
+      location: §5, Human Study on Open-ended Tasks, Table 4
+    perturbation: Not reported
+    external:
       status: reported
-      label: Text or graph
-      detail: Binary support against a time-limited corpus or graph, assessed separately from downstream benchmark
-        labels.
-    experimental: Not reported
-    decision:
-      status: reported
-      label: Offline filter
-      detail: Retrospective filtering on benchmark candidates. Prospective laboratory decision benefit was not reported.
+      label: Accuracy by score group
+      detail: The authors grouped hypotheses by KnowHD score and measured relation-prediction accuracy against TruthHypo
+        labels. Fig. 3 plots groups with at least ten hypotheses. This evaluates the association at hypothesis level;
+        individual entailment decisions lack a claim-level gold standard in this test.
+      location: §§2.1–2.3 and §4.3, Fig. 3
   limitation: Retrieval misses count against groundedness. Selection for a large score gap limits extrapolation
     to close pairs. The score does not measure novelty or biological truth.
   reading: full text checked
@@ -108,6 +122,21 @@
     method: Tests atomic claims against retrieved text or graph relations and averages the support labels.
     validation: Experts preferred the more grounded hypothesis in 59% of 54 selected pairs. Pairs with small score
       gaps were omitted.
+    flow:
+      object: Atomic claims in a hypothesis rationale
+      basis: Retrieved passages and/or graph relations
+      verdict: Fraction of claims supported
+      use: Filter hypotheses in a benchmark
+  outcomes:
+    review_time: Not reported
+    retrospective:
+      status: reported
+      label: Best of five
+      detail: For each input, select the highest-grounded of five generated candidates. Fig. 4 compares resulting
+        GPT-4o-mini relation accuracy with greedy decoding and majority voting. The combined graph-and-literature
+        generation setting reached 63.44%; the advantage varied by setting.
+      location: §4.4, Fig. 4
+    prospective: Not reported
 - id: chatinvent-judge
   title: Designing an LLM-based evaluation system for agentic AI in drug discovery through human alignment
   year: 2026
@@ -131,16 +160,19 @@
   validation:
     repeat:
       status: reported
-      label: 3 runs
-      detail: Three runs on 30 unique questions per judge, with agreement by dimension (§5.3).
+      label: 3 runs per question
+      detail: Four judge models were each scheduled for three trials on 30 unique questions. Claude returned usable
+        results for 28 questions. The authors report within-model consistency by rubric dimension.
+      location: §5.3, Intra-LLM agreement, Fig. 3
     expert:
       status: reported
-      label: 5 experts
-      detail: Five experts provided the reference ratings. After few-shot optimization, exact agreement with the
-        human majority rose from 0.80 to 0.86 on ten validation questions.
-    literature: Not reported
-    experimental: Not reported
-    decision: Not reported
+      label: 5 experts / 30 questions
+      detail: Five experts annotated assistant responses. Judge ratings were compared with the human majority. On
+        a ten-question validation split for prompt optimization, agreement rose from 0.80 to 0.86. The tool-call
+        check uses direct comparison.
+      location: Fig. 1, Table 2, §§5.2–5.4 and Table 4
+    perturbation: Not reported
+    external: Not reported
   limitation: One assistant. Agreement varies by dimension. Prompt optimization was evaluated on ten validation
     questions. Scores concern the answer delivered to the user.
   reading: full text checked
@@ -154,6 +186,15 @@
     task: Quality of a drug-discovery assistant’s answer
     method: Assigns four rubric labels using the request, answer and tool context.
     validation: Alignment with the expert majority rose from 0.80 to 0.86 on ten validation questions for one assistant.
+    flow:
+      object: Drug-research assistant response
+      basis: User request, tool context and output rubric
+      verdict: Four rubric labels with justifications
+      use: Audit assistant responses
+  outcomes:
+    review_time: Not reported
+    retrospective: Not reported
+    prospective: Not reported
 - id: qi-biomedical
   title: 'Large Language Models as Biomedical Hypothesis Generators: A Comprehensive Evaluation'
   year: 2024
@@ -175,12 +216,14 @@
     repeat: Not reported
     expert:
       status: reported
-      label: 100 examples
-      detail: Three biomedical experts rated 100 unseen examples. Across the selected settings in Table 1, Spearman
-        correlations of model and human average ratings range from 0.73 to 0.94.
-    literature: Not reported
-    experimental: Not reported
-    decision: Not reported
+      label: 3 experts / 100 examples
+      detail: Three biomedical experts rated 100 unseen examples from selected generator settings. Table 1 reports
+        Spearman correlations of 0.73–0.94 between average model and human ratings across the listed settings. The
+        paper also evaluates generators with reference hypotheses; those comparisons do not validate individual
+        judge scores.
+      location: §3.1, Evaluation metrics; §3.4, Human Evaluation and Case Study, Table 1
+    perturbation: Not reported
+    external: Not reported
   limitation: Human review concentrated on selected high-performing settings. Perceived novelty and verifiability
     are rubric judgments.
   reading: full text checked
@@ -194,7 +237,17 @@
     venue: COLM
     task: Quality of a generated biomedical hypothesis
     method: GPT-4 scores four dimensions from 0 to 3 given the scientific background.
-    validation: Three experts rated 100 unseen examples. Rank correlations of 0.73–0.94 cover selected generator settings.
+    validation: Three experts rated 100 unseen examples. Rank correlations of 0.73–0.94 cover selected generator
+      settings.
+    flow:
+      object: Generated biomedical hypothesis
+      basis: Background, novelty, relevance, significance and verifiability
+      verdict: Four scores (0–3) with explanations
+      use: Compare hypothesis generators
+  outcomes:
+    review_time: Not reported
+    retrospective: Not reported
+    prospective: Not reported
 - id: valsci
   title: 'Valsci: an open-source, self-hostable literature review utility for automated large-batch scientific claim
     verification using large language models'

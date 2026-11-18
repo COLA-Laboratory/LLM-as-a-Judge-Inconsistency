@@ -1,45 +1,58 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="860" height="362" viewBox="0 0 860 362" role="img" aria-labelledby="title desc">
-  <title id="title">From a biological research object to a judgment and its use</title>
-  <desc>Objects and reference material feed a language-model judge. A verdict can inform review or selection. Expert ratings and held-out evidence can test a verdict independently. Dashed boxes show prospective experimental and decision endpoints outside current coverage.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7Z" fill="#52777a"/></marker>
-    <style>
-      text{font-family:Arial,Helvetica,sans-serif;fill:#153639}
-      .label{font-size:13px;font-weight:700;letter-spacing:1px;fill:#49666a}
-      .head{font-size:19px;font-weight:700}.body{font-size:15px}
-      .box{fill:#fff;stroke:#a8bfbe}.flow{fill:none;stroke:#52777a;stroke-width:1.8;marker-end:url(#arrow)}
-    </style>
-  </defs>
-  <rect width="860" height="362" rx="12" fill="#f6f9f8"/>
-  <text x="20" y="29" class="label">INPUTS</text>
-  <text x="340" y="29" class="label">JUDGMENT</text>
-  <text x="600" y="29" class="label">RESEARCH USE</text>
-  <rect x="20" y="43" width="266" height="78" rx="7" class="box"/>
-  <text x="35" y="69" class="head">Research object</text>
-  <text x="35" y="92" class="body">Hypothesis, supporting claim</text><text x="35" y="111" class="body">or scientific assistant’s answer</text>
-  <rect x="20" y="135" width="266" height="78" rx="7" class="box"/>
-  <text x="35" y="161" class="head">Reference material</text>
-  <text x="35" y="184" class="body">Papers, database relations, task</text><text x="35" y="203" class="body">context or an explicit rubric</text>
-  <path d="M286 82H311V126H334" class="flow"/><path d="M286 175H311V126" fill="none" stroke="#52777a" stroke-width="1.8"/>
-  <rect x="340" y="62" width="208" height="130" rx="7" fill="#164e50"/>
-  <text x="356" y="92" style="fill:white" class="head">LLM judge</text>
-  <path d="M356 104H532" stroke="#649391"/>
-  <text x="356" y="127" style="fill:white" class="body">Score a dimension,</text>
-  <text x="356" y="148" style="fill:white" class="body">compare alternatives or</text>
-  <text x="356" y="169" style="fill:white" class="body">rule on evidence support.</text>
-  <path d="M548 126H594" class="flow"/>
-  <rect x="600" y="62" width="240" height="130" rx="7" class="box"/>
-  <text x="616" y="92" class="head">Use the verdict</text>
-  <text x="616" y="121" class="body">Review supporting literature,</text>
-  <text x="616" y="142" class="body">filter hypotheses offline or</text>
-  <text x="616" y="163" class="body">audit generated outputs.</text>
-  <path d="M444 193V233" class="flow"/>
-  <rect x="20" y="239" width="820" height="100" rx="7" fill="#e7f1ef"/>
-  <text x="36" y="267" class="head">Check the judgment independently</text>
-  <text x="36" y="292" class="body">Compare with expert ratings or held-out labels.</text>
-  <text x="36" y="314" class="body">Repeated calls separately measure stability.</text>
-  <rect x="470" y="252" width="351" height="74" rx="5" fill="#fffdf7" stroke="#8b7241" stroke-dasharray="5 4"/>
-  <text x="485" y="274" class="label">PROSPECTIVE TEST · COVERAGE GAP</text>
-  <text x="485" y="296" class="body">Test the chosen hypothesis in the lab.</text>
-  <text x="485" y="315" class="body">Measure how using the verdict changes yield.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="573" viewBox="0 0 860 573" role="img">
+  <title>Three biological judging tasks and their possible research uses</title>
+  <rect x="0" y="0" width="860" height="573" fill="#fbfcfa" rx="10" />
+  <text x="20" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#506469" text-anchor="start">Object</text>
+  <text x="198" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#17645f" text-anchor="start">→</text>
+  <text x="230" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#506469" text-anchor="start">Evidence or criteria</text>
+  <text x="408" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#17645f" text-anchor="start">→</text>
+  <text x="440" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#506469" text-anchor="start">Judge output</text>
+  <text x="618" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#17645f" text-anchor="start">→</text>
+  <text x="650" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#506469" text-anchor="start">Possible use</text>
+  <rect x="10" y="41" width="840" height="34" fill="#dceee8" rx="5" />
+  <text x="20" y="64" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#17645f" text-anchor="start">Literature support for biological relationships</text>
+  <text x="20" y="95" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#17645f" text-anchor="start">SKiM-GPT · BMC Bioinformatics 2026</text>
+  <text x="20" y="117" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Proposed</text>
+  <text x="20" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">disease–gene–drug link</text>
+  <text x="230" y="117" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Retrieved PubMed</text>
+  <text x="230" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">abstracts</text>
+  <text x="440" y="117" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Support score (−2 to</text>
+  <text x="440" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">+2) and rationale</text>
+  <text x="650" y="117" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Review support for a</text>
+  <text x="650" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">proposed link</text>
+  <text x="20" y="169" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#17645f" text-anchor="start">KnowHD · IJCAI 2025</text>
+  <text x="20" y="191" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Atomic claims in a</text>
+  <text x="20" y="210" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">hypothesis rationale</text>
+  <text x="230" y="191" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Retrieved passages</text>
+  <text x="230" y="210" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">and/or graph relations</text>
+  <text x="440" y="191" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Fraction of claims</text>
+  <text x="440" y="210" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">supported</text>
+  <text x="650" y="191" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Filter hypotheses in a</text>
+  <text x="650" y="210" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">benchmark</text>
+  <rect x="10" y="235" width="840" height="34" fill="#dceee8" rx="5" />
+  <text x="20" y="258" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#17645f" text-anchor="start">Multidimensional quality of biological hypotheses</text>
+  <text x="20" y="289" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#17645f" text-anchor="start">Biomedical Hypothesis Evaluation · COLM 2024</text>
+  <text x="20" y="311" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Generated biomedical</text>
+  <text x="20" y="330" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">hypothesis</text>
+  <text x="230" y="311" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Background, novelty,</text>
+  <text x="230" y="330" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">relevance, significance</text>
+  <text x="230" y="349" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">and verifiability</text>
+  <text x="440" y="311" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Four scores (0–3) with</text>
+  <text x="440" y="330" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">explanations</text>
+  <text x="650" y="311" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Compare hypothesis</text>
+  <text x="650" y="330" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">generators</text>
+  <rect x="10" y="374" width="840" height="34" fill="#dceee8" rx="5" />
+  <text x="20" y="397" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#17645f" text-anchor="start">Output quality of a drug-discovery assistant</text>
+  <text x="20" y="428" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#17645f" text-anchor="start">ChatInvent judge · Artificial Intelligence in the Life Sciences 2026</text>
+  <text x="20" y="450" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Drug-research assistant</text>
+  <text x="20" y="469" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">response</text>
+  <text x="230" y="450" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">User request, tool</text>
+  <text x="230" y="469" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">context and output</text>
+  <text x="230" y="488" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">rubric</text>
+  <text x="440" y="450" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Four rubric labels with</text>
+  <text x="440" y="469" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">justifications</text>
+  <text x="650" y="450" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Audit assistant</text>
+  <text x="650" y="469" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">responses</text>
+  <rect x="10" y="513" width="840" height="44" fill="#fffaf0" rx="5" stroke="#78571b" stroke-dasharray="5 4" />
+  <text x="20" y="540" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#78571b" text-anchor="start">Planned coverage</text>
+  <text x="169" y="540" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#183f42" text-anchor="start">Judging experiment designs and prospectively prioritizing candidates.</text>
 </svg>

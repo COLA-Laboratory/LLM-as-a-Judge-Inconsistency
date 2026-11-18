@@ -8,15 +8,15 @@ This survey compares what LLMs judge in biological research, how they reach a ve
 
 <!-- SUMMARY:END -->
 
-Content updated **2026-11-18**.
+Content updated **2026-11-19**.
 
 [Framework](#research-framework) · [Reading routes](#reading-guide) · [Compare papers](#tasks-and-methods) · [Validation map](#validation-evidence) · [Further reading](#further-reading) · [Contribute](#scope-and-contributions)
 
 ## Research framework
 
-![A research object and its reference material enter a judge. The verdict informs a research decision and can be checked against independent evidence.](assets/framework.svg)
+![Four studies grouped by biological task, showing the object, evidence or criteria, verdict and possible use for each judge.](assets/framework.svg)
 
-Solid boxes show uses represented in the core papers. The dashed box marks an open question: does acting on the verdict improve experimental outcomes?
+**Figure 1.** Read across a study to follow one judgment. The two studies in the first band evaluate evidence at different scales: SKiM-GPT scores a whole relationship, while KnowHD counts supported claims in its rationale. A possible use describes what the verdict can inform. The dashed band identifies directions the survey aims to cover.
 
 ## Reading guide
 
@@ -41,12 +41,17 @@ The core papers address three tasks: checking evidence for a claim, assessing th
 
 ## Validation evidence
 
-![Core studies compared across repeated judgments, expert agreement, literature checks, biological experiments and decision or efficiency outcomes.](assets/validation-map.svg)
+![Judge tests by paper: repeated calls, expert comparison, controlled changes to supplied evidence and evaluation against external relation labels.](assets/validation-map.svg)
 
-Each column measures a different endpoint. A dash means the study did not report that test. [Read the settings and results for each study](docs/evidence.md).
+**Figure 2.** Each row is one paper. Runs count calls on the same object; experts count people; hypotheses, examples, questions and pairs count distinct units of evaluation. ChatInvent scheduled three runs on 30 questions per model; one model returned results for 28. A dash records an unreported test and carries no performance judgment. [ChatInvent, §5.3](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf) · [Test-by-test source locations](docs/evidence.md)
 
-- **Agreement depends on the question experts answered.** In the [COLM study](https://arxiv.org/pdf/2407.08940), experts rated hypotheses against four criteria. In [ChatInvent](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf), they rated responses to user requests. A match with either panel measures agreement on its rubric.
-- **The measured downstream benefits have different units.** [SKiM-GPT](https://link.springer.com/article/10.1186/s12859-025-06350-7) reports 0.23 hours of system time versus 8.42 hours per reviewer for 159 abstracts. [KnowHD](https://ijcai.org/proceedings/2025/0873.pdf) filters hypotheses retrospectively and compares expert choices. Discovery yield after experimental follow-up remains open.
+**What was tested?** SKiM-GPT changed the polarity of supplied abstracts and observed whether its scores followed the evidence. KnowHD compared relation accuracy across groundedness-score groups using TruthHypo labels. The former tests sensitivity to an intervention; the latter tests association with an external benchmark. Expert comparisons likewise depend on what the panel rated: support, perceived truthfulness, hypothesis quality or assistant response quality. [SKiM-GPT, Fig. 5](https://link.springer.com/article/10.1186/s12859-025-06350-7) · [KnowHD, §4.3, Fig. 3 and Table 4](https://ijcai.org/proceedings/2025/0873.pdf) · [COLM, §3.4](https://arxiv.org/pdf/2407.08940) · [ChatInvent, §§5.2–5.4](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf)
+
+### Measured uses and benefits
+
+- **Review time.** SKiM-GPT reports 0.23 hours of system time versus 8.42 hours per human reviewer for the same 159 abstracts. [Table 1](https://link.springer.com/article/10.1186/s12859-025-06350-7)
+- **Retrospective selection.** KnowHD selected the highest-scoring of five candidates per input. On the graph-plus-literature setting, GPT-4o-mini reached 63.44% relation accuracy; the comparison with greedy decoding and majority voting varied by setting. [§4.4, Fig. 4](https://ijcai.org/proceedings/2025/0873.pdf)
+- **Prospective discovery benefit.** Across the four core papers, none reports a prospective comparison linking use of the judge to laboratory-confirmed improvements in discovery yield. Reference labels, expert preferences and system-level results alone cannot establish that benefit. [Study-level outcome records](docs/evidence.md)
 
 **Coverage gaps.** The current core set leaves experimental-design quality and prospective candidate prioritization open. Relevant studies would connect a recorded judge verdict to expert design assessments or measured outcomes for the candidates selected.
 
@@ -81,6 +86,6 @@ Each column measures a different endpoint. A dash means the study did not report
 
 We cover basic biology, biological engineering and drug discovery. Clinical diagnosis and patient advice are adjacent areas. To include a direct judge study, locate the **evaluated object, evidence or criteria, verdict format, and supporting method section or public prompt**. Keep unverified candidates in the [screening record](docs/screening.md).
 
-Edit [papers.yaml](papers.yaml) using one stable ID per work. Summarize each core paper under `homepage` and record its five validation endpoints separately. Update the content date in this README when revising the survey. With Python 3.9+ and PyYAML, run `python3 generate_paper_list.py`, then `python3 generate_paper_list.py --check`. The script refreshes the marked blocks and evidence map.
+Edit [papers.yaml](papers.yaml) using one stable ID per work. For each core paper, describe the task under `homepage.flow`, code performed tests under `validation`, and record review time, retrospective selection and prospective benefit under `outcomes`. Give each reported item a source location. Use `Pending verification` when its status is unresolved. Update the content date in this README when revising the survey. With Python 3.9+ and PyYAML, run `python3 generate_paper_list.py`, then `python3 generate_paper_list.py --check`. The script refreshes the marked blocks and both SVG figures.
 
 [Evidence notes](docs/evidence.md) · [Screening decisions and migration history](docs/screening.md)
