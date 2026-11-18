@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/COLA-Laboratory/LLM-as-a-Judge-Inconsistency)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
-[![Last Update](https://img.shields.io/badge/Last_Update-2026.06-blue.svg)](https://github.com/COLA-Laboratory/LLM-as-a-Judge-Inconsistency)
+[![Last Update](https://img.shields.io/badge/Last_Update-2026.11-blue.svg)](https://github.com/COLA-Laboratory/LLM-as-a-Judge-Inconsistency)
 
 A curated, up-to-date collection of work on **inconsistency in LLM-as-a-Judge**: when LLM evaluators give unstable, biased, or non-rankable preferences. We organize the literature by the *source* of inconsistency, and separately track the **baselines** (judging / aggregation methods) and **datasets** commonly used to study it.
 
@@ -24,7 +24,7 @@ A curated, up-to-date collection of work on **inconsistency in LLM-as-a-Judge**:
 
 ## Taxonomy
 
-We classify inconsistency by **where it comes from**, not by which model exhibits it. The first two clusters (non-transitivity, run-to-run stability) are under-covered by existing lists and are the focus of this collection.
+We classify inconsistency by **where it comes from**, not by which model exhibits it. Two questions guide this collection. Do pairwise preferences form cycles across three answers? Does the same judge return the same verdict when asked again about an identical pair?
 
 <!-- Add a taxonomy figure here once ready: -->
 <!-- ![Taxonomy](assets/taxonomy.png) -->
@@ -64,7 +64,6 @@ Methods commonly used as comparison points. Split into *judging paradigms* (how 
 | mElo / multidimensional Elo | Captures non-transitive (cyclic) structure |
 | Bayesian Hodge-BT | Hodge decomposition + Bayesian BT |
 | GPM | General preference / capability modeling |
-| RankRefine | Post-hoc BT regression refinement |
 
 ---
 
@@ -86,7 +85,7 @@ Methods commonly used as comparison points. Split into *judging paradigms* (how 
 
 ## Paper List
 
-> A curated collection of papers on inconsistency in LLM-as-a-Judge, grouped by the **source** of inconsistency rather than by model or task. Each entry gives the paper link, publication date, code (where available), and a one-sentence takeaway. Within each category, papers are ordered chronologically so the progression of ideas is easy to follow.
+> A curated collection of papers on inconsistency in LLM-as-a-Judge, grouped by the **source** of inconsistency rather than by model or task. Each entry gives the paper link, date of first arXiv submission, code (where available), and a one-sentence takeaway. Within each category, papers are ordered chronologically so the progression of ideas is easy to follow.
 
 <!-- PAPER-LIST:START -->
 
@@ -95,10 +94,18 @@ Methods commonly used as comparison points. Split into *judging paradigms* (how 
 * [A Survey on LLM-as-a-Judge](https://arxiv.org/abs/2411.15594) ![date](https://img.shields.io/badge/date-2024.11-b31b1b.svg)
   > Maps the LLM-as-a-Judge landscape, including a consistency/reliability cluster covering biases and stability.
 
-### Position / Order Bias (1)
+### Position / Order Bias (2)
+
+* [Large Language Models are not Fair Evaluators](https://arxiv.org/abs/2305.17926) ![date](https://img.shields.io/badge/date-2023.05-b31b1b.svg)
+  > Swapping the order of two answers changes the reported winner. The authors test balanced presentation orders to reduce this effect.
 
 * [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685) ![date](https://img.shields.io/badge/date-2023.06-b31b1b.svg) [![code](https://img.shields.io/badge/code-link-black.svg)](https://github.com/lm-sys/FastChat)
   > Introduces MT-Bench and documents position, verbosity, and self-enhancement biases in LLM judges.
+
+### Self-Preference Bias (1)
+
+* [LLM Evaluators Recognize and Favor Their Own Generations](https://arxiv.org/abs/2404.13076) ![date](https://img.shields.io/badge/date-2024.04-b31b1b.svg)
+  > Tests whether judges recognize their own text and finds that stronger self-recognition tracks a stronger preference for their own answers.
 
 ### Length / Verbosity Bias (1)
 
@@ -110,15 +117,29 @@ Methods commonly used as comparison points. Split into *judging paradigms* (how 
 * [Investigating Non-Transitivity in LLM-as-a-Judge](https://arxiv.org/abs/2502.14074) ![date](https://img.shields.io/badge/date-2025.02-b31b1b.svg)
   > Shows pairwise LLM judgments violate transitivity; analyzes Bradley-Terry limits and round-robin tournament aggregation.
 
-### Calibration & Reliability (1)
+### Stability & Self-Consistency (3)
+
+* [Same Input, Different Scores: A Multi Model Study on the Inconsistency of LLM Judge](https://arxiv.org/abs/2603.04417) ![date](https://img.shields.io/badge/date-2026.03-b31b1b.svg)
+  > Repeats scoring on identical inputs to measure within-judge variation, between-judge differences, and sensitivity to sampling temperature.
+
+* [The Coin Flip Judge? Reliability and Bias in LLM-as-a-Judge Evaluation](https://arxiv.org/abs/2606.13685) ![date](https://img.shields.io/badge/date-2026.06-b31b1b.svg)
+  > Compares repeated pairwise verdicts with pointwise score gaps and estimates how many votes recover a reference verdict in the studied sample.
+
+* [All Verdicts are Not Equal: Rethinking LLM Judge Reliability](https://arxiv.org/abs/2610.12083) ![date](https://img.shields.io/badge/date-2026.10-b31b1b.svg)
+  > Crosses repeated trials with answer-order swaps and reference labels to distinguish reproducibility, order sensitivity, and correctness.
+
+### Calibration & Reliability (2)
 
 * [RewardBench: Evaluating Reward Models for Language Modeling](https://arxiv.org/abs/2403.13787) ![date](https://img.shields.io/badge/date-2024.03-b31b1b.svg) [![code](https://img.shields.io/badge/code-link-black.svg)](https://github.com/allenai/reward-bench)
   > Benchmark probing reward-model / judge reliability across chat, reasoning, and safety prompts.
 
+* [JudgeBench: A Benchmark for Evaluating LLM-based Judges](https://arxiv.org/abs/2410.12784) ![date](https://img.shields.io/badge/date-2024.10-b31b1b.svg)
+  > Tests whether judges identify the correct response in hard pairs spanning knowledge, reasoning, mathematics, and code.
+
 ### Mitigation & Repair (1)
 
-* [RankRefine: Post-hoc Bradley-Terry Refinement for LLM Judge Rankings](https://arxiv.org/abs/2508.16495) ![date](https://img.shields.io/badge/date-2025.08-b31b1b.svg)
-  > Refines noisy judge rankings via post-hoc Bradley-Terry regression.
+* [Aligning with Human Judgement: The Role of Pairwise Preference in Large Language Model Evaluators](https://arxiv.org/abs/2403.16950) ![date](https://img.shields.io/badge/date-2024.03-b31b1b.svg)
+  > Studies residual disagreement after bias calibration and uses pairwise human preferences to improve evaluator alignment.
 
 <!-- PAPER-LIST:END -->
 
