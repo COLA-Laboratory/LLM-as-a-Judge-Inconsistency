@@ -6,8 +6,10 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 
+from assets.validation_map import evidence_map
+
 ROOT = Path(__file__).resolve().parent
-START, END = "<!-- PAPER-LIST:START -->", "<!-- PAPER-LIST:END -->"
+BRANCHES = ("claim support", "hypothesis qualities", "research outputs")
 ROLES = dict(A="Judge methods and validation", B="Biological studies using a judge",
              C="General methods and reliability", D="Workflows and adjacent cases", E="Related reviews")
 TASKS = {"hypothesis quality", "claim support", "mechanism explanation", "experimental design",
@@ -51,8 +53,21 @@ def validate(records):
         for field, vocab in [("tasks", TASKS), ("methods", METHODS)]:
             tags = paper[field]
             require(isinstance(tags, list) and set(tags) <= vocab and len(tags) == len(set(tags)), f"{key}: {field}")
-        require(set(paper["validation"]) == set(VALIDATION) and
-                all(isinstance(v, str) and v.strip() for v in paper["validation"].values()), f"{key}: validation")
+        require(set(paper["validation"]) == set(VALIDATION), f"{key}: missing validation endpoint")
+        core = paper["role"] in {"A", "B"} and paper["screening"] == "included"
+        if core:
+            home = paper.get("homepage", {})
+            require(home.get("branch") in BRANCHES, f"{key}: unknown homepage branch")
+            require(all(isinstance(home.get(k), str) and home[k].strip() for k in
+                        ("name", "object", "method", "validation", "use", "limit")), f"{key}: comparison fields")
+        for field, item in paper["validation"].items():
+            if isinstance(item, dict):
+                require(item.get("status") == "reported" and all(isinstance(item.get(k), str) and
+                        item[k].strip() for k in ("label", "detail")), f"{key}: invalid {field} evidence")
+            else:
+                require(isinstance(item, str) and item.strip(), f"{key}: empty {field}")
+                if core:
+                    require(item in {"Not reported", "Pending verification"}, f"{key}: missing map status")
         require(paper["screening"] in {"included", "pending", "excluded"}, f"{key}: screening")
         require(paper["reading"] in {"full text checked", "abstract only", "pending verification"}, f"{key}: reading")
         if paper["screening"] == "included":
@@ -81,16 +96,48 @@ def validate(records):
             seen[value] = key
 
 
-def index(records):
-    lines = []
-    for role, title in ROLES.items():
-        group = [p for p in records if p["role"] == role and p["screening"] == "included"]
-        if group:
-            lines += [f"### {role}. {title} ({len(group)})", ""]
-            for p in group:
-                lines.append(f"- [{p['title']}](docs/evidence.md#{p['id']}) ({p['year']}). {p['contribution']}")
-            lines.append("")
+def comparison(papers):
+    lines = ["| Paper | Object | Method | Validation basis | Use | Main limit |", "|---|---|---|---|---|---|"]
+    for p in papers:
+        h = p["homepage"]
+        cells = [f"[{h['name']}]({p['source']})"] + [h[k] for k in ("object", "method", "validation", "use", "limit")]
+        lines.append("| " + " | ".join(cells) + " |")
     return lines
+
+
+def primary(papers):
+    lines = []
+    for p in papers:
+        lines.extend([f"### {p['homepage']['name']}", "", f"*{p['title']}* · {p['publication']} · **{p['role']}**", "",
+                      f"**Judgment.** {p['object']} {p['basis']} {p['output']}", "",
+                      f"**Validation.** {detail(p['validation']['expert'])}",
+                      "", f"**Limit.** {p['limitation']}", ""])
+        links = [f"[Paper]({p['source']})"]
+        if p.get("code"):
+            links.append(f"[Code]({p['code']})")
+        links.append(f"[Evidence notes](docs/evidence.md#{p['id']})")
+        lines += [" · ".join(links), ""]
+    return lines
+
+
+def further_reading(records):
+    lines = []
+    for role in ("C", "D", "E"):
+        papers = [p for p in records if p["role"] == role and p["screening"] == "included"]
+        if not papers:
+            continue
+        name = f"{ROLES[role]} · {role} ({len(papers)})"
+        lines += [f"<details><summary>{name}</summary>" if role == "C" else f"**{name}**", ""]
+        for p in papers:
+            lines += [f"- [{p['title']}]({p['url']}) — {p['contribution']} [Notes](docs/evidence.md#{p['id']})"]
+        if role == "C":
+            lines.extend(["", "</details>"])
+        lines.append("")
+    return lines
+
+
+def detail(value):
+    return value["detail"] if isinstance(value, dict) else value
 
 
 def evidence(records):
@@ -103,7 +150,7 @@ def evidence(records):
         lines += [f"- **Object** — {p['object']}", f"- **Criteria and evidence** — {p['basis']}",
                   f"- **Judge output** — {p['output']}", f"- **Method location** — {p['location']} [Source]({p['source']})"]
         for key, label in VALIDATION.items():
-            lines.append(f"- **{label}** — {p['validation'][key]}")
+            lines.append(f"- **{label}** — {detail(p['validation'][key])}")
         lines += [f"- **Limitation** — {p['limitation']}", f"- **Screening rationale** — {p['reason']}"]
         links = []
         for key, prefix in [("doi", "https://doi.org/"), ("arxiv", "https://arxiv.org/abs/"), ("code", "")]:
@@ -122,12 +169,12 @@ def screening(records):
     return lines
 
 
-def replace_block(path, lines):
-    original = path.read_text(encoding="utf-8")
-    require(original.count(START) == original.count(END) == 1 and original.index(START) < original.index(END),
-            f"{path}: expected one ordered pair of generation markers")
-    before, after = original.split(START)
-    return before + START + "\n\n" + "\n".join(lines).strip() + "\n\n" + END + after.split(END)[1]
+def replace_block(original, lines, name="PAPER-LIST"):
+    start, end = (f"<!-- {name}:{side} -->" for side in ("START", "END"))
+    require(original.count(start) == original.count(end) == 1 and original.index(start) < original.index(end),
+            f"Expected one ordered pair of {name} markers")
+    before, after = original.split(start)
+    return before + start + "\n\n" + "\n".join(lines).strip() + "\n\n" + end + after.split(end)[1]
 
 
 def check_links(pages):
@@ -137,7 +184,7 @@ def check_links(pages):
                 continue
             filename, _, anchor = target.partition("#")
             dest = (path.parent / filename).resolve() if filename else path
-            require(dest.is_file(), f"{path.name}: missing {target}")
+            require(dest.is_file() or dest in pages, f"{path.name}: missing {target}")
             if anchor:
                 body = pages[dest] if dest in pages else dest.read_text(encoding="utf-8")
                 headings = re.findall(r"^#{1,6} (.+)$", body, re.M)
@@ -151,14 +198,24 @@ def main():
     args = parser.parse_args()
     records = yaml.safe_load((ROOT / "papers.yaml").read_text(encoding="utf-8"))
     validate(records)
-    pages = {ROOT / name: replace_block(ROOT / name, render(records))
-             for name, render in [("README.md", index), ("docs/evidence.md", evidence), ("docs/screening.md", screening)]}
+    core = [p for p in records if p["role"] in {"A", "B"} and p["screening"] == "included"]
+    core.sort(key=lambda p: BRANCHES.index(p["homepage"]["branch"]))
+    readme = ROOT / "README.md"
+    page = readme.read_text(encoding="utf-8")
+    for name, lines in [("COMPARISON", comparison(core)), ("PRIMARY", primary(core)),
+                        ("PAPER-LIST", further_reading(records))]:
+        page = replace_block(page, lines, name)
+    pages = {readme: page}
+    for filename, render in [("docs/evidence.md", evidence), ("docs/screening.md", screening)]:
+        path = ROOT / filename
+        pages[path] = replace_block(path.read_text(encoding="utf-8"), render(records))
+    pages[ROOT / "assets/validation-map.svg"] = evidence_map(core)
     check_links(pages)
     for path, content in pages.items():
-        if content != path.read_text(encoding="utf-8"):
-            require(not args.check, f"Stale generated block in {path.name}")
+        if not path.exists() or content != path.read_text(encoding="utf-8"):
+            require(not args.check, f"Stale output in {path.name}")
             path.write_text(content, encoding="utf-8")
-    print(f"Validated {len(records)} records and {len(pages)} linked pages.")
+    print(f"Validated {len(records)} records and {len(core)} core studies.")
 
 
 if __name__ == "__main__":

@@ -16,16 +16,16 @@ Scores how strongly the retrieved abstracts support a proposed biomedical relati
 
 Tasks: hypothesis quality, claim support. Methods: pointwise scoring, retrieval-augmented.
 
-- **Object** — A given disease–gene–drug hypothesis.
-- **Criteria and evidence** — PubMed titles and abstracts linking the terms, optionally filtered for relevance.
-- **Judge output** — Signed support score from −2 to +2 and an explanation.
+- **Object** — The judge evaluates a proposed disease–gene–drug relationship.
+- **Criteria and evidence** — It reads PubMed titles and abstracts linking the terms, optionally filtered for relevance.
+- **Judge output** — It returns a support score from −2 to +2 and explains its rating.
 - **Method location** — Implementation, Fig. 1. Results, Score alignment evaluation (Fig. 3), Cost estimation (Table 1), Retrieved text vs. memory. [Source](https://link.springer.com/article/10.1186/s12859-025-06350-7)
 - **Repeated judgments** — Ten independent runs per hypothesis, with score distributions in Fig. 3.
 - **Expert agreement** — Four computational biologists scored the same evidence. Without filtering, median directions agreed for 13 of 14 hypotheses.
 - **Literature support** — Real abstracts plus controlled changes to abstract content test sensitivity to the supplied evidence.
 - **Biological experimental validation** — Not reported
 - **Decision or efficiency benefit** — Table 1 compares review of 159 abstracts (8.42 hours per human versus 0.23 hours for the system). Downstream discovery yield was not reported.
-- **Limitation** — Four experts assessed 14 selected hypotheses. Abstract coverage and publication bias restrict the evidence.
+- **Limitation** — The selected hypotheses cover 14 relationships. Abstract coverage and publication bias restrict the evidence.
 - **Screening rationale** — Design and expert comparison of the evidence-based judge are central contributions.
 
 [doi](https://doi.org/10.1186/s12859-025-06350-7) · [code](https://github.com/stewart-lab/skimgpt) · [Other version](https://doi.org/10.1101/2025.07.28.664797)
@@ -40,9 +40,9 @@ Estimates how much of a hypothesis and its rationale is grounded in earlier know
 
 Tasks: claim support, hypothesis quality. Methods: retrieval-augmented, classification.
 
-- **Object** — Atomic claims extracted from a hypothesis and its reasoning.
-- **Criteria and evidence** — Retrieved PubMed passages, knowledge-graph relations, or their union.
-- **Judge output** — Binary entailment per claim. Equation 3 averages the supported indicators over all claims.
+- **Object** — The judge evaluates atomic claims extracted from a hypothesis and its reasoning.
+- **Criteria and evidence** — It receives retrieved PubMed passages, knowledge-graph relations, or both.
+- **Judge output** — Each claim receives a binary support decision. Equation 3 averages these decisions across claims.
 - **Method location** — KnowHD method, Fig. 2 and Eqs. 1–3 (pp. 7851–7852). Open-ended evaluation, Table 4. Extended appendix accompanies the arXiv version. [Source](https://ijcai.org/proceedings/2025/0873.pdf)
 - **Repeated judgments** — Not reported
 - **Expert agreement** — Two experts compared 54 selected pairs. Expert–expert agreement was 80%. Experts selected the more grounded hypothesis as more likely true in 59.26% of pairs.
@@ -64,19 +64,19 @@ Validates a rubric for grading a drug-discovery assistant’s responses against 
 
 Tasks: output quality. Methods: pointwise scoring, classification.
 
-- **Object** — ChatInvent response to a user request.
-- **Criteria and evidence** — Question, response, evaluation context and expected, accepted and actual tool calls. Rubrics cover completeness, relevancy, structural clarity and scope adherence.
-- **Judge output** — Allowed label for each dimension plus a short justification. Tool-call correctness is computed separately by direct comparison.
+- **Object** — The judge grades ChatInvent’s answer to a drug-discovery request.
+- **Criteria and evidence** — It sees the request, response, evaluation context and expected, accepted and actual tool calls.
+- **Judge output** — It assigns a rubric label and justification for completeness, relevancy, structural clarity and scope adherence. A separate program checks tool-call correctness.
 - **Method location** — Fig. 1 and Table 2, then §§5.2–5.4 and Table 4 (journal full text). [Source](https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf)
 - **Repeated judgments** — Three runs on 30 unique questions per judge, with agreement by dimension (§5.3).
-- **Expert agreement** — Five experts. Judge scores compared with the human majority using exact match and weighted kappa. Few-shot optimization raised alignment from 0.80 to 0.86 on ten questions.
+- **Expert agreement** — Five experts provided the reference ratings. After few-shot optimization, exact agreement with the human majority rose from 0.80 to 0.86 on ten validation questions.
 - **Literature support** — Not reported
 - **Biological experimental validation** — Not reported
 - **Decision or efficiency benefit** — Not reported
 - **Limitation** — One assistant. Agreement varies by dimension. Prompt optimization was evaluated on ten validation questions. Scores concern the answer delivered to the user.
 - **Screening rationale** — The central contribution is judge design and expert alignment in drug discovery.
 
-[doi](https://doi.org/10.1016/j.ailsci.2026.100187) · [arxiv](https://arxiv.org/abs/2608.21057)
+[doi](https://doi.org/10.1016/j.ailsci.2026.100187) · [arxiv](https://arxiv.org/abs/2608.21057) · [code](https://github.com/MolecularAI/langdmta-lab/blob/main/evaluation/langdmta_eval/README.md)
 
 ### qi-biomedical
 
@@ -88,19 +88,19 @@ Compares hypothesis generators using a GPT-4 assessment alongside text-overlap a
 
 Tasks: hypothesis quality. Methods: pointwise scoring.
 
-- **Object** — Generated biomedical hypothesis.
-- **Criteria and evidence** — Supplied background and four criteria covering novelty, relevance, significance and verifiability.
-- **Judge output** — GPT-4 supplies a 0–3 score and rationale per dimension.
+- **Object** — GPT-4 evaluates a generated biomedical hypothesis.
+- **Criteria and evidence** — It receives the scientific background and criteria for novelty, relevance, significance and verifiability.
+- **Judge output** — It assigns each dimension a score from 0 to 3 and explains the score.
 - **Method location** — §3.1 evaluation metrics, pp. 4–5. §3.4 Human Evaluation and Case Study, Table 1. [Source](https://arxiv.org/pdf/2407.08940)
 - **Repeated judgments** — Not reported
-- **Expert agreement** — Three biomedical experts assessed 100 unseen examples from selected settings using the same rubric. Table 1 compares human and GPT-4 evaluations.
+- **Expert agreement** — Three biomedical experts rated 100 unseen examples. Across the selected settings in Table 1, Spearman correlations of model and human average ratings range from 0.73 to 0.94.
 - **Literature support** — Not reported
 - **Biological experimental validation** — Not reported
 - **Decision or efficiency benefit** — Not reported
 - **Limitation** — Human review concentrated on selected high-performing settings. Perceived novelty and verifiability are rubric judgments.
 - **Screening rationale** — The generator comparison is the main research question. Its scoring module meets all four inclusion criteria.
 
-[doi](https://doi.org/10.48550/arXiv.2407.08940) · [arxiv](https://arxiv.org/abs/2407.08940)
+[doi](https://doi.org/10.48550/arXiv.2407.08940) · [arxiv](https://arxiv.org/abs/2407.08940) · [code](https://github.com/TsinghuaC3I/LLM4BioHypoGen)
 
 ### valsci
 

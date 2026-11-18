@@ -14,27 +14,47 @@
   - pointwise scoring
   - retrieval-augmented
   contribution: Scores how strongly the retrieved abstracts support a proposed biomedical relationship.
-  object: A given disease–gene–drug hypothesis.
-  basis: PubMed titles and abstracts linking the terms, optionally filtered for relevance.
-  output: Signed support score from −2 to +2 and an explanation.
+  object: The judge evaluates a proposed disease–gene–drug relationship.
+  basis: It reads PubMed titles and abstracts linking the terms, optionally filtered for relevance.
+  output: It returns a support score from −2 to +2 and explains its rating.
   location: Implementation, Fig. 1. Results, Score alignment evaluation (Fig. 3), Cost estimation (Table 1), Retrieved
     text vs. memory.
   source: https://link.springer.com/article/10.1186/s12859-025-06350-7
   validation:
-    repeat: Ten independent runs per hypothesis, with score distributions in Fig. 3.
-    expert: Four computational biologists scored the same evidence. Without filtering, median directions agreed
-      for 13 of 14 hypotheses.
-    literature: Real abstracts plus controlled changes to abstract content test sensitivity to the supplied evidence.
+    repeat:
+      status: reported
+      label: 10 runs
+      detail: Ten independent runs per hypothesis, with score distributions in Fig. 3.
+    expert:
+      status: reported
+      label: 4 experts
+      detail: Four computational biologists scored the same evidence. Without filtering, median directions agreed
+        for 13 of 14 hypotheses.
+    literature:
+      status: reported
+      label: Abstract edits
+      detail: Real abstracts plus controlled changes to abstract content test sensitivity to the supplied evidence.
     experimental: Not reported
-    decision: Table 1 compares review of 159 abstracts (8.42 hours per human versus 0.23 hours for the system).
-      Downstream discovery yield was not reported.
-  limitation: Four experts assessed 14 selected hypotheses. Abstract coverage and publication bias restrict the
+    decision:
+      status: reported
+      label: Review time
+      detail: Table 1 compares review of 159 abstracts (8.42 hours per human versus 0.23 hours for the system).
+        Downstream discovery yield was not reported.
+  limitation: The selected hypotheses cover 14 relationships. Abstract coverage and publication bias restrict the
     evidence.
   reading: full text checked
   screening: included
   reason: Design and expert comparison of the evidence-based judge are central contributions.
   versions:
   - https://doi.org/10.1101/2025.07.28.664797
+  homepage:
+    name: SKiM-GPT
+    branch: claim support
+    object: Disease–gene–drug link
+    method: Signed support score
+    validation: Same abstracts, four experts
+    use: Review a proposed link
+    limit: Abstract coverage
 - id: knowhd
   title: 'Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language
     Models'
@@ -52,25 +72,42 @@
   - retrieval-augmented
   - classification
   contribution: Estimates how much of a hypothesis and its rationale is grounded in earlier knowledge.
-  object: Atomic claims extracted from a hypothesis and its reasoning.
-  basis: Retrieved PubMed passages, knowledge-graph relations, or their union.
-  output: Binary entailment per claim. Equation 3 averages the supported indicators over all claims.
+  object: The judge evaluates atomic claims extracted from a hypothesis and its reasoning.
+  basis: It receives retrieved PubMed passages, knowledge-graph relations, or both.
+  output: Each claim receives a binary support decision. Equation 3 averages these decisions across claims.
   location: KnowHD method, Fig. 2 and Eqs. 1–3 (pp. 7851–7852). Open-ended evaluation, Table 4. Extended appendix
     accompanies the arXiv version.
   source: https://ijcai.org/proceedings/2025/0873.pdf
   validation:
     repeat: Not reported
-    expert: Two experts compared 54 selected pairs. Expert–expert agreement was 80%. Experts selected the more grounded
-      hypothesis as more likely true in 59.26% of pairs.
-    literature: Binary support against a time-limited corpus or graph, assessed separately from downstream benchmark
-      labels.
+    expert:
+      status: reported
+      label: 54 pairs
+      detail: Two experts compared 54 selected pairs. Expert–expert agreement was 80%. Experts selected the more
+        grounded hypothesis as more likely true in 59.26% of pairs.
+    literature:
+      status: reported
+      label: Text or graph
+      detail: Binary support against a time-limited corpus or graph, assessed separately from downstream benchmark
+        labels.
     experimental: Not reported
-    decision: Retrospective filtering on benchmark candidates. Prospective laboratory decision benefit was not reported.
+    decision:
+      status: reported
+      label: Offline filter
+      detail: Retrospective filtering on benchmark candidates. Prospective laboratory decision benefit was not reported.
   limitation: Retrieval misses count against groundedness. Selection for a large score gap limits extrapolation
     to close pairs. The score does not measure novelty or biological truth.
   reading: full text checked
   screening: included
   reason: KnowHD is a separately specified and evaluated biomedical evidence judge.
+  homepage:
+    name: KnowHD
+    branch: claim support
+    object: Claims in a rationale
+    method: Atomic entailment
+    validation: Earlier evidence, expert choices
+    use: Filter hypotheses
+    limit: Retrieval misses
 - id: chatinvent-judge
   title: Designing an LLM-based evaluation system for agentic AI in drug discovery through human alignment
   year: 2026
@@ -85,17 +122,22 @@
   - pointwise scoring
   - classification
   contribution: Validates a rubric for grading a drug-discovery assistant’s responses against expert ratings.
-  object: ChatInvent response to a user request.
-  basis: Question, response, evaluation context and expected, accepted and actual tool calls. Rubrics cover completeness,
-    relevancy, structural clarity and scope adherence.
-  output: Allowed label for each dimension plus a short justification. Tool-call correctness is computed separately
-    by direct comparison.
+  object: The judge grades ChatInvent’s answer to a drug-discovery request.
+  basis: It sees the request, response, evaluation context and expected, accepted and actual tool calls.
+  output: It assigns a rubric label and justification for completeness, relevancy, structural clarity and scope
+    adherence. A separate program checks tool-call correctness.
   location: Fig. 1 and Table 2, then §§5.2–5.4 and Table 4 (journal full text).
   source: https://research.chalmers.se/publication/554919/file/554919_Fulltext.pdf
   validation:
-    repeat: Three runs on 30 unique questions per judge, with agreement by dimension (§5.3).
-    expert: Five experts. Judge scores compared with the human majority using exact match and weighted kappa. Few-shot
-      optimization raised alignment from 0.80 to 0.86 on ten questions.
+    repeat:
+      status: reported
+      label: 3 runs
+      detail: Three runs on 30 unique questions per judge, with agreement by dimension (§5.3).
+    expert:
+      status: reported
+      label: 5 experts
+      detail: Five experts provided the reference ratings. After few-shot optimization, exact agreement with the
+        human majority rose from 0.80 to 0.86 on ten validation questions.
     literature: Not reported
     experimental: Not reported
     decision: Not reported
@@ -104,6 +146,15 @@
   reading: full text checked
   screening: included
   reason: The central contribution is judge design and expert alignment in drug discovery.
+  code: https://github.com/MolecularAI/langdmta-lab/blob/main/evaluation/langdmta_eval/README.md
+  homepage:
+    name: ChatInvent judge
+    branch: research outputs
+    object: Assistant response
+    method: Four rubric labels
+    validation: Repeats, expert majority
+    use: Audit assistant outputs
+    limit: One assistant
 - id: qi-biomedical
   title: 'Large Language Models as Biomedical Hypothesis Generators: A Comprehensive Evaluation'
   year: 2024
@@ -116,15 +167,18 @@
   methods:
   - pointwise scoring
   contribution: Compares hypothesis generators using a GPT-4 assessment alongside text-overlap and human assessments.
-  object: Generated biomedical hypothesis.
-  basis: Supplied background and four criteria covering novelty, relevance, significance and verifiability.
-  output: GPT-4 supplies a 0–3 score and rationale per dimension.
+  object: GPT-4 evaluates a generated biomedical hypothesis.
+  basis: It receives the scientific background and criteria for novelty, relevance, significance and verifiability.
+  output: It assigns each dimension a score from 0 to 3 and explains the score.
   location: §3.1 evaluation metrics, pp. 4–5. §3.4 Human Evaluation and Case Study, Table 1.
   source: https://arxiv.org/pdf/2407.08940
   validation:
     repeat: Not reported
-    expert: Three biomedical experts assessed 100 unseen examples from selected settings using the same rubric.
-      Table 1 compares human and GPT-4 evaluations.
+    expert:
+      status: reported
+      label: 100 examples
+      detail: Three biomedical experts rated 100 unseen examples. Across the selected settings in Table 1, Spearman
+        correlations of model and human average ratings range from 0.73 to 0.94.
     literature: Not reported
     experimental: Not reported
     decision: Not reported
@@ -134,6 +188,15 @@
   screening: included
   reason: The generator comparison is the main research question. Its scoring module meets all four inclusion criteria.
   doi: 10.48550/arXiv.2407.08940
+  code: https://github.com/TsinghuaC3I/LLM4BioHypoGen
+  homepage:
+    name: Qi et al.
+    branch: hypothesis qualities
+    object: Generated hypothesis
+    method: Four rubric scores
+    validation: Expert rubric scores
+    use: Compare generators
+    limit: Selected settings
 - id: valsci
   title: 'Valsci: an open-source, self-hostable literature review utility for automated large-batch scientific claim
     verification using large language models'
