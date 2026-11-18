@@ -55,6 +55,8 @@ The core papers address three tasks: checking evidence for a claim, assessing th
 
 **Coverage gaps.** The current core set leaves experimental-design quality and prospective candidate prioritization open. Relevant studies would connect a recorded judge verdict to expert design assessments or measured outcomes for the candidates selected.
 
+**Design your own judge.** Use the [design checklist and example evaluation record](docs/judge-design.md) to define evidence access, record separate verdicts and plan an independent check.
+
 ## Further reading
 
 <!-- PAPER-LIST:START -->

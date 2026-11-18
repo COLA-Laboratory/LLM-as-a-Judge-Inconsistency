@@ -2,7 +2,7 @@
 
 For each core study, the method describes the information available when the judge produces a verdict. The tests section identifies how the authors examined the judge. The outcomes section records measured review time, retrospective selection and prospective experimental benefit separately. A dash in the homepage map means that the paper did not report that specific test. “Pending verification” marks unresolved evidence. Background and historical entries retain their original screening fields.
 
-[Reading guide](../README.md#reading-guide) · [Screening decisions](screening.md)
+[Reading guide](../README.md#reading-guide) · [Judge design checklist and example record](judge-design.md) · [Screening decisions](screening.md)
 
 <!-- PAPER-LIST:START -->
 
