@@ -1,4 +1,5 @@
 """Draw the reporting matrix using the same core records as the reading guide."""
+from textwrap import wrap
 from xml.etree import ElementTree as ET
 
 COLUMNS = {
@@ -35,12 +36,14 @@ def evidence_map(papers):
     box(0, 0, width, height, "#fbfcfb", 10)
     text(17, 46, "Study", bold=True)
     for col, labels in enumerate(COLUMNS.values()):
-        x = 164 + 136 * col + 65
+        x = 180 + 133 * col + 64
         for line, label in enumerate(labels):
             text(x, 30 + 20 * line, label, bold=True, center=True)
     for i, paper in enumerate(papers):
         y = 64 + 48 * i
-        text(17, y + 26, paper["homepage"]["name"], bold=True)
+        labels = wrap(paper["homepage"]["name"], width=21)
+        for line, label in enumerate(labels):
+            text(17, y + 25 - (len(labels) - 1) * 9 + line * 18, label, size=14, bold=True)
         for col, key in enumerate(COLUMNS):
             cell = paper["validation"][key]
             if isinstance(cell, dict):
@@ -49,9 +52,9 @@ def evidence_map(papers):
                 status = cell
                 label = "—" if status == "Not reported" else "?"
             fill, ink, _ = STYLES[status]
-            x = 164 + 136 * col
-            box(x, y, 130, 40, fill)
-            text(x + 65, y + 26, label, size=15, bold=True, center=True, color=ink)
+            x = 180 + 133 * col
+            box(x, y, 128, 40, fill)
+            text(x + 64, y + 26, label, size=15, bold=True, center=True, color=ink)
     for x, (status, (fill, ink, name)) in zip((18, 186, 378), STYLES.items()):
         y = height - 40
         box(x, y, 28, 24, fill)

@@ -59,7 +59,7 @@ def validate(records):
             home = paper.get("homepage", {})
             require(home.get("branch") in BRANCHES, f"{key}: unknown homepage branch")
             require(all(isinstance(home.get(k), str) and home[k].strip() for k in
-                        ("name", "object", "method", "validation", "use", "limit")), f"{key}: comparison fields")
+                        ("name", "venue", "task", "method", "validation")), f"{key}: comparison fields")
         for field, item in paper["validation"].items():
             if isinstance(item, dict):
                 require(item.get("status") == "reported" and all(isinstance(item.get(k), str) and
@@ -96,27 +96,24 @@ def validate(records):
             seen[value] = key
 
 
+def summary(records, core):
+    included = sum(p["screening"] == "included" for p in records)
+    return [f"**Survey in progress** · {len(core)} core biological studies · "
+            f"{included} included works · {len(records)} records screened"]
+
+
 def comparison(papers):
-    lines = ["| Paper | Object | Method | Validation basis | Use | Main limit |", "|---|---|---|---|---|---|"]
+    lines = ["| Paper & venue | Scientific task | How it judges | Validation & key limit |", "|---|---|---|---|"]
     for p in papers:
         h = p["homepage"]
-        cells = [f"[{h['name']}]({p['source']})"] + [h[k] for k in ("object", "method", "validation", "use", "limit")]
-        lines.append("| " + " | ".join(cells) + " |")
-    return lines
-
-
-def primary(papers):
-    lines = []
-    for p in papers:
-        lines.extend([f"### {p['homepage']['name']}", "", f"*{p['title']}* · {p['publication']} · **{p['role']}**", "",
-                      f"**Judgment.** {p['object']} {p['basis']} {p['output']}", "",
-                      f"**Validation.** {detail(p['validation']['expert'])}",
-                      "", f"**Limit.** {p['limitation']}", ""])
         links = [f"[Paper]({p['source']})"]
         if p.get("code"):
             links.append(f"[Code]({p['code']})")
-        links.append(f"[Evidence notes](docs/evidence.md#{p['id']})")
-        lines += [" · ".join(links), ""]
+        links.append(f"[Notes](docs/evidence.md#{p['id']})")
+        role = {"A": "Judge method", "B": "Judge application"}[p["role"]]
+        citation = f"**{h['name']}**<br>{h['venue']} {p['year']}<br>*{role}*<br>" + "&nbsp;·&nbsp;".join(links)
+        cells = [citation, h["task"], h["method"], h["validation"]]
+        lines.append("| " + " | ".join(cells) + " |")
     return lines
 
 
@@ -126,7 +123,7 @@ def further_reading(records):
         papers = [p for p in records if p["role"] == role and p["screening"] == "included"]
         if not papers:
             continue
-        name = f"{ROLES[role]} · {role} ({len(papers)})"
+        name = f"{ROLES[role]} ({len(papers)})"
         lines += [f"<details><summary>{name}</summary>" if role == "C" else f"**{name}**", ""]
         for p in papers:
             lines += [f"- [{p['title']}]({p['url']}) — {p['contribution']} [Notes](docs/evidence.md#{p['id']})"]
@@ -202,7 +199,7 @@ def main():
     core.sort(key=lambda p: BRANCHES.index(p["homepage"]["branch"]))
     readme = ROOT / "README.md"
     page = readme.read_text(encoding="utf-8")
-    for name, lines in [("COMPARISON", comparison(core)), ("PRIMARY", primary(core)),
+    for name, lines in [("SUMMARY", summary(records, core)), ("COMPARISON", comparison(core)),
                         ("PAPER-LIST", further_reading(records))]:
         page = replace_block(page, lines, name)
     pages = {readme: page}

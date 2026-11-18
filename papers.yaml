@@ -50,11 +50,11 @@
   homepage:
     name: SKiM-GPT
     branch: claim support
-    object: Disease–gene–drug link
-    method: Signed support score
-    validation: Same abstracts, four experts
-    use: Review a proposed link
-    limit: Abstract coverage
+    venue: BMC Bioinformatics
+    task: Literature support for a proposed disease–gene–drug link
+    method: Rates support from −2 to +2 using retrieved abstracts.
+    validation: Judge and expert medians agreed in direction on 13 of 14 hypotheses before filtering. Abstract
+      coverage limits the verdict.
 - id: knowhd
   title: 'Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language
     Models'
@@ -103,11 +103,11 @@
   homepage:
     name: KnowHD
     branch: claim support
-    object: Claims in a rationale
-    method: Atomic entailment
-    validation: Earlier evidence, expert choices
-    use: Filter hypotheses
-    limit: Retrieval misses
+    venue: IJCAI
+    task: Literature or graph support for a hypothesis rationale
+    method: Tests atomic claims against retrieved text or graph relations and averages the support labels.
+    validation: Experts preferred the more grounded hypothesis in 59% of 54 selected pairs. Pairs with small score
+      gaps were omitted.
 - id: chatinvent-judge
   title: Designing an LLM-based evaluation system for agentic AI in drug discovery through human alignment
   year: 2026
@@ -150,11 +150,10 @@
   homepage:
     name: ChatInvent judge
     branch: research outputs
-    object: Assistant response
-    method: Four rubric labels
-    validation: Repeats, expert majority
-    use: Audit assistant outputs
-    limit: One assistant
+    venue: Artificial Intelligence in the Life Sciences
+    task: Quality of a drug-discovery assistant’s answer
+    method: Assigns four rubric labels using the request, answer and tool context.
+    validation: Alignment with the expert majority rose from 0.80 to 0.86 on ten validation questions for one assistant.
 - id: qi-biomedical
   title: 'Large Language Models as Biomedical Hypothesis Generators: A Comprehensive Evaluation'
   year: 2024
@@ -190,13 +189,12 @@
   doi: 10.48550/arXiv.2407.08940
   code: https://github.com/TsinghuaC3I/LLM4BioHypoGen
   homepage:
-    name: Qi et al.
+    name: Biomedical Hypothesis Evaluation
     branch: hypothesis qualities
-    object: Generated hypothesis
-    method: Four rubric scores
-    validation: Expert rubric scores
-    use: Compare generators
-    limit: Selected settings
+    venue: COLM
+    task: Quality of a generated biomedical hypothesis
+    method: GPT-4 scores four dimensions from 0 to 3 given the scientific background.
+    validation: Three experts rated 100 unseen examples. Rank correlations of 0.73–0.94 cover selected generator settings.
 - id: valsci
   title: 'Valsci: an open-source, self-hostable literature review utility for automated large-batch scientific claim
     verification using large language models'
